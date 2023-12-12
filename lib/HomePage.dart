@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kickxx/row_items.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -54,6 +55,8 @@ class HomePage extends StatelessWidget {
                 icon: Icon(Icons.search,color: Colors.deepPurple,),
               ),
             ),
+            SizedBox(height: 20,),
+            RowItemsWidget(),
 
           ],
         ),
