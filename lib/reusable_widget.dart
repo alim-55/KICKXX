@@ -1,8 +1,7 @@
 //import 'dart:js_interop';
-
-
-
 import 'package:flutter/material.dart';
+import 'package:kickxx/HomePage.dart';
+
 
 Image logoWidget(String imageName){
   return Image.asset(
@@ -53,7 +52,9 @@ Container signInSignUpButton(BuildContext context, bool islogin, Function onTap)
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
     child: ElevatedButton(
       onPressed: () {
-        onTap();
+        onTap(
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage()))
+        );
       },
       child: Text(islogin? 'LOG IN' : 'SIGN UP',
         style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold,fontSize: 16),

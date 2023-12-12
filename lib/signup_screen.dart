@@ -3,6 +3,7 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:kickxx/HomePage.dart';
 import 'reusable_widget.dart';
 import 'home_screen.dart';
 class SignUpScreen extends StatefulWidget {
@@ -75,7 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(height: 20),
                 signInSignUpButton(context, false, (){
 
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>HomeScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage()));
                   /*.onError((error, stackTrace) {
                     print("Error ${error.toString()}");*/
                   // });
