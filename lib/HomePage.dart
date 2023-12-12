@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:kickxx/row_items.dart';
 
@@ -14,6 +15,17 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(onPressed: () => {}, icon: Icon(Icons.menu,color: Colors.white,)),
           IconButton(onPressed: () => {}, icon: Icon(Icons.search,color: Colors.white,)),
+        ],
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+        backgroundColor: Colors.deepPurple,
+        color: Colors.deepPurpleAccent.shade200,
+        animationDuration: Duration(milliseconds: 300),
+        items: [
+          Icon(Icons.home,color: Colors.white,),
+          Icon(Icons.favorite,color: Colors.white,),
+          Icon(Icons.notifications,color: Colors.white,),
+          Icon(Icons.account_circle,color: Colors.white,),
         ],
       ),
       body: Container(
