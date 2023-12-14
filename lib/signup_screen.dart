@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:kickxx/HomePage.dart';
 import 'reusable_widget.dart';
 import 'home_screen.dart';
+import 'package:flutter/material.dart';
+import 'reusable_widget.dart';
+import 'signup_screen.dart';
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
