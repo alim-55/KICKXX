@@ -1,6 +1,8 @@
 
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'HomePage.dart';
 import 'reusable_widget.dart';
 import 'signup_screen.dart';
 class SignInScreen extends StatefulWidget {
@@ -46,7 +48,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   FocusScope.of(context).unfocus();
                 }),
                 SizedBox(height: 20),
-                signInSignUpButton(context, true, (){}),
+                signInSignUpButton(context, true, (){
+                  FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextController.text,
+                      password: _passwordTextController.text).then((value) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage()));
+                  });
+                }),
                 signUpOption()
 
               ],
