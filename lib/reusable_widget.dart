@@ -44,7 +44,7 @@ TextField reusableTextField(String text, IconData icon, bool isPasswordType, Tex
   );
 }
 
-Container signInSignUpButton(BuildContext context, bool islogin, Function onTap){
+Container firebaseButton(BuildContext context, String title, Function onTap){
   return Container(
     width: MediaQuery.of(context).size.width,
     height: 50,
@@ -53,10 +53,10 @@ Container signInSignUpButton(BuildContext context, bool islogin, Function onTap)
     child: ElevatedButton(
       onPressed: () {
         onTap(
-            Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage()))
+           // Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage()))
         );
       },
-      child: Text(islogin? 'LOG IN' : 'SIGN UP',
+      child: Text(title,
         style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold,fontSize: 16),
       ),
       style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states){
