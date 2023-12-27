@@ -8,6 +8,7 @@ class RowItemsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      
       child: Row(
         children: [
           for(int i=1;i<5;i++)
