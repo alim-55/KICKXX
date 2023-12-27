@@ -5,11 +5,11 @@ class ColoumWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GridView.count(
+    return  GridView.count(
         childAspectRatio: .68,
         shrinkWrap: true,
         crossAxisCount: 2,
+        physics: NeverScrollableScrollPhysics(),
         children: [
           for(int i =1;i<=10;i++)
           Container(
@@ -104,7 +104,7 @@ class ColoumWidget extends StatelessWidget {
             ),
           )
         ],
-      ),
-    );
+      );
+
   }
 }

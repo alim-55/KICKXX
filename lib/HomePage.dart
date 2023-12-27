@@ -93,8 +93,8 @@ class HomePage extends StatelessWidget {
               ),
             ),
             padding: EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+            child: ListView(
+
               children: [
                 RowItemsWidget(),
                 Padding(
