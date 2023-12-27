@@ -2,6 +2,7 @@
 
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -90,6 +91,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
+  Future addUserDetails(String name,String email,String phone) async{
+    await FirebaseFirestore.instance.collection('users').add({
+      'User name': name,
+      'Email':email,
+      'Phone':phone,
+    });
+  }
+
+
+
   _signup(String _mailTextController, String _passwordTextController)async{
     try{
       if (_userNameTextController.text.isEmpty || _mailTextController.isEmpty || _passwordTextController.isEmpty || _phoneController.text.isEmpty) {
@@ -101,6 +113,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return;
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _mailTextController, password: _passwordTextController);
+      addUserDetails(_userNameTextController.text,
+          _mailTextController, _phoneController.text);
       Navigator.push(context, MaterialPageRoute(builder: (context) =>SignInScreen()));
 
     } on FirebaseAuthException catch(error){
