@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:kickxx/row_items.dart';
-
+import 'package:kickxx/ColoumItem.dart';
 class HomePage extends StatelessWidget {
   const HomePage({Key? key});
 
@@ -95,8 +95,10 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
+                ColoumWidget(),
               ],
+
             ),
             ),
         );
