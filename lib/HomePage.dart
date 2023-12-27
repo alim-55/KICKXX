@@ -20,10 +20,6 @@ class HomePage extends StatelessWidget {
               onPressed: () => {},
               icon: Icon(Icons.menu, color: Colors.white),
             ),
-            IconButton(
-              onPressed: () => {},
-              icon: Icon(Icons.search, color: Colors.white),
-            ),
           ],
         ),
         bottomNavigationBar: CurvedNavigationBar(
