@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:kickxx/row_items.dart';
 import 'package:kickxx/ColoumItem.dart';
+import 'package:kickxx/NotificationPage.dart';
+import 'package:kickxx/AccountPage.dart';
+import 'package:kickxx/FavoritePage.dart';
 class HomePage extends StatelessWidget {
   const HomePage({Key? key});
 
@@ -27,10 +30,50 @@ class HomePage extends StatelessWidget {
           color: Colors.deepPurpleAccent.shade200,
           animationDuration: Duration(milliseconds: 300),
           items: [
-            Icon(Icons.home, color: Colors.white),
-            Icon(Icons.favorite, color: Colors.white),
-            Icon(Icons.notifications, color: Colors.white),
-            Icon(Icons.account_circle, color: Colors.white),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.home, color: Colors.white),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FavoritePage(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.favorite, color: Colors.white),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NotificationPage(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.notifications, color: Colors.white),
+            ),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AccountPage(),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.account_circle, color: Colors.white),
+            ),
           ],
         ),
         body: Container(
