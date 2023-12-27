@@ -2,9 +2,18 @@
 
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:kickxx/HomePage.dart';
+import 'package:kickxx/signin_screen.dart';
+import 'reusable_widget.dart';
+import 'HomePage.dart';
+
 import 'package:flutter/material.dart';
 import 'reusable_widget.dart';
-import 'home_screen.dart';
+import 'signup_screen.dart';
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -73,15 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   FocusScope.of(context).unfocus();
                 }),
                 SizedBox(height: 20),
-                signInSignUpButton(context, false, (){
-
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>HomeScreen()));
-                  /*.onError((error, stackTrace) {
-                    print("Error ${error.toString()}");*/
-                  // });
-
-
-                })
+                firebaseButton(context, "Sign Up", ()=>_signup(_mailTextController.text, _passwordTextController.text)),
               ],
             ),
           ),
@@ -89,5 +90,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       ),
     );
+  }
+
+  Future addUserDetails(String name,String email,String phone) async{
+    await FirebaseFirestore.instance.collection('users').add({
+      'User name': name,
+      'Email':email,
+      'Phone':phone,
+    });
+  }
+
+
+
+  _signup(String _mailTextController, String _passwordTextController)async{
+    try{
+      if (_userNameTextController.text.isEmpty || _mailTextController.isEmpty || _passwordTextController.isEmpty || _phoneController.text.isEmpty) {
+        Fluttertoast.showToast(msg: 'Please fill in all fields', gravity: ToastGravity.TOP);
+        return;
+      }
+      if (_phoneController.text.length !=11) {
+        Fluttertoast.showToast(msg: 'Phone number must be have 11 digits', gravity: ToastGravity.TOP);
+        return;
+      }
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _mailTextController, password: _passwordTextController);
+      addUserDetails(_userNameTextController.text,
+          _mailTextController, _phoneController.text);
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>SignInScreen()));
+
+    } on FirebaseAuthException catch(error){
+      Fluttertoast.showToast(msg: error.message!, gravity: ToastGravity.TOP);
+    }
   }
 }
