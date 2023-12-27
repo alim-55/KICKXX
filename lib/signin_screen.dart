@@ -108,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
         onPressed: (){
          // onTap(
-             Navigator.push(context, MaterialPageRoute(builder: (context) =>ResetPassScreen()));
+             Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPassScreen()));
          // );
         },
       ),
