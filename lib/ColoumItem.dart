@@ -45,13 +45,15 @@ class ColoumWidget extends StatelessWidget {
                     )
                   ],
                 ),
-                InkWell(
-                  onTap: (){},
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    child: Image.network('https://www.kickgame.co.uk/cdn/shop/products/Air-Jordan-1-Low-CQ4277-001-Travis_1.png?v=1659088883'),
-                    width: 100,
-                    height: 100,
+                Expanded(
+                  child: InkWell(
+                    onTap: (){},
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      child: Image.network('https://www.kickgame.co.uk/cdn/shop/products/Air-Jordan-1-Low-CQ4277-001-Travis_1.png?v=1659088883'),
+                      width: 100,
+                      height: 100,
+                    ),
                   ),
                 ),
                 Container(
