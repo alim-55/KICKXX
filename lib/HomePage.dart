@@ -103,49 +103,48 @@ class HomePage extends StatelessWidget {
                   RowItemsWidget(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    child: SingleChildScrollView(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              cursorColor: Colors.deepPurple,
-                              style: TextStyle(color: Colors.deepPurple),
-                              //textAlign: TextAlign.center,
-                              decoration: InputDecoration(
-                                hintText: 'Search',
-                                hintStyle: TextStyle(color: Colors.deepPurple),
-                                filled: true,
-                                fillColor: Colors.white.withOpacity(1),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                contentPadding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            cursorColor: Colors.deepPurple,
+                            style: TextStyle(color: Colors.deepPurple),
+                            //textAlign: TextAlign.center,
+                            decoration: InputDecoration(
+                              hintText: 'Search',
+                              hintStyle: TextStyle(color: Colors.deepPurple),
+                              filled: true,
+                              fillColor: Colors.white.withOpacity(1),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                              onChanged: (t) {
-                                TextStyle(color: Colors.deepPurple);
-                                print(t);
-                              },
+                              contentPadding: EdgeInsets.symmetric(horizontal: 30),
                             ),
+                            onChanged: (t) {
+                              TextStyle(color: Colors.deepPurple);
+                              print(t);
+                            },
                           ),
-                          SizedBox(width: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                            ),
-                            child: IconButton(
-                              onPressed: () {
-                                // Perform search action
-                              },
-                              icon: Icon(Icons.search, color: Colors.deepPurple),
-                            ),
+                        ),
+                        SizedBox(width: 10),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
                           ),
-                        ],
-                      ),
+                          child: IconButton(
+                            onPressed: () {
+                              // Perform search action
+                            },
+                            icon: Icon(Icons.search, color: Colors.deepPurple),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 10),
                   ColoumWidget(),
+
                 ],
 
               ),
