@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -14,8 +15,42 @@ void main() async {
   );
   runApp(const MyApp());
 }
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
-class MyApp extends StatelessWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var islogin=false;
+  var auth=FirebaseAuth.instance;
+  checkifLogin()async{
+   auth.authStateChanges().listen((User? user) {
+      if(user!= null &&mounted){
+        setState(() {
+          islogin=true;
+
+        });
+      }
+
+    });
+  }
+  void initState(){
+    checkifLogin();
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    //auth.signOut();
+    return MaterialApp(
+
+    home: islogin? HomePage(): SignInScreen(),
+    );
+  }
+}
+
+/*class MyApp extends  StatefulWidget{
   const MyApp({super.key});
 
   // This widget is the root of your application.
@@ -46,3 +81,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+*/
