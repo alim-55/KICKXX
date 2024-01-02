@@ -3,6 +3,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kickxx/reusable_widget.dart';
+import 'package:kickxx/signin_screen.dart';
+import 'package:provider/provider.dart';
 import 'signup_screen.dart';
 import 'text_box.dart';
 class AccountPage extends StatefulWidget {
@@ -64,10 +67,11 @@ class _AccountPageState extends State<AccountPage> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [Colors.black,Colors.deepPurple,Colors.black,Colors.deepPurple,Colors.black,Colors.deepPurple,Colors.black],
+          //gradient: LinearGradient(colors: [Colors.black,Colors.deepPurple,Colors.black,Colors.deepPurple,Colors.black,Colors.deepPurple,Colors.black],
               //[Colors.black, Colors.black, Colors.black],
               //[Color(0xFF0F52BA), Color(0xFFC0C0C0)],
-              begin: Alignment.topLeft, end: Alignment.bottomRight),
+             // begin: Alignment.topLeft, end: Alignment.bottomRight),
+          color: Colors.grey
         ),
         child: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance.collection("users").doc(currentUser.email).snapshots(),
@@ -88,7 +92,8 @@ class _AccountPageState extends State<AccountPage> {
                   Text(
                     currentUser.email!,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.black,
+                      fontSize: 20),
                   ),
                   SizedBox(height: 50),
 
@@ -96,7 +101,9 @@ class _AccountPageState extends State<AccountPage> {
                       padding: EdgeInsets.only(left: 25.0),
                   child: Text(
                     "My Details",
-                    style: TextStyle(color: Colors.grey[700]),
+                    style: TextStyle(color: Colors.black,
+                      fontSize: 20
+                    ),
                   ),
                   ),
 
@@ -113,7 +120,12 @@ class _AccountPageState extends State<AccountPage> {
                     sectionName: 'Phone',
                     onPressed: ()=>editField('Phone'),
                   ),
+                  SizedBox(height: 10),
 
+                  firebaseButton(context, "Logout", (){
+                    FirebaseAuth.instance.signOut();
+                    Navigator.push(context, MaterialPageRoute(builder: (context) =>SignInScreen()));
+                  }),
                 ],
               );
             } else if(snapshot.hasError){
