@@ -5,16 +5,16 @@ class ColoumWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  GridView.count(
-        childAspectRatio: .68,
-        shrinkWrap: true,
-        crossAxisCount: 2,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          for(int i =1;i<=10;i++)
+    return GridView.count(
+      childAspectRatio: .68,
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      physics: NeverScrollableScrollPhysics(),
+      children: [
+        for (int i = 1; i <= 10; i++)
           Container(
-            padding: EdgeInsets.only(left: 20,right:20,top: 20),
-            margin: EdgeInsets.symmetric(vertical: 10,horizontal: 16),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -47,10 +47,11 @@ class ColoumWidget extends StatelessWidget {
                 ),
                 Expanded(
                   child: InkWell(
-                    onTap: (){},
+                    onTap: () {},
                     child: Container(
                       margin: EdgeInsets.all(10),
-                      child: Image.network('https://www.kickgame.co.uk/cdn/shop/products/Air-Jordan-1-Low-CQ4277-001-Travis_1.png?v=1659088883'),
+                      child: Image.network(
+                          'https://www.kickgame.co.uk/cdn/shop/products/Air-Jordan-1-Low-CQ4277-001-Travis_1.png?v=1659088883'),
                       width: 100,
                       height: 100,
                     ),
@@ -80,16 +81,15 @@ class ColoumWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                Padding(padding:
-                EdgeInsets.symmetric(vertical: 10),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Center(
                         child: Text(
                           "\$250",
-                          style:
-                          TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             color: Colors.deepPurple,
                             fontWeight: FontWeight.bold,
@@ -97,7 +97,8 @@ class ColoumWidget extends StatelessWidget {
                         ),
                       ),
                       Icon(
-                        Icons.shopping_cart,color: Colors.deepPurple,
+                        Icons.shopping_cart,
+                        color: Colors.deepPurple,
                       )
                     ],
                   ),
@@ -105,8 +106,7 @@ class ColoumWidget extends StatelessWidget {
               ],
             ),
           )
-        ],
-      );
-
+      ],
+    );
   }
 }
