@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     //auth.signOut();
     return MaterialApp(
-
+      debugShowCheckedModeBanner: false,
     home: islogin? HomePage(): SignInScreen(),
     );
   }

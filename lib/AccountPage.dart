@@ -24,7 +24,7 @@ class _AccountPageState extends State<AccountPage> {
    String newValue ="";
    await showDialog(context: context,
      builder: (context)=>AlertDialog(
-       backgroundColor: Colors.grey,
+       backgroundColor: Colors.deepPurple[200],
      title: Text("Edit $field",
        style: TextStyle(color: Colors.white),
      ),
@@ -71,7 +71,7 @@ class _AccountPageState extends State<AccountPage> {
               //[Colors.black, Colors.black, Colors.black],
               //[Color(0xFF0F52BA), Color(0xFFC0C0C0)],
              // begin: Alignment.topLeft, end: Alignment.bottomRight),
-          color: Colors.grey
+          color: Colors.deepPurple[200]
         ),
         child: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance.collection("users").doc(currentUser.email).snapshots(),
