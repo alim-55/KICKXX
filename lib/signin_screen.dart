@@ -47,9 +47,14 @@ class _SignInScreenState extends State<SignInScreen> {
                   FocusScope.of(context).unfocus();
                 }),
                 SizedBox(height: 3),
+
+
                 forgetPass(context),
+
+
                 firebaseButton(context, "Sign In", ()=>_signin(_emailTextController.text, _passwordTextController.text)),
-                signUpOption()
+
+                signUpOption(),
 
               ],
             ),
@@ -66,6 +71,8 @@ class _SignInScreenState extends State<SignInScreen> {
         return;
       }
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextController, password: _passwordTextController);
+      final currentUser =FirebaseAuth.instance.currentUser!;
+      Fluttertoast.showToast(msg: "Successfully logged in as ${currentUser.email}", gravity: ToastGravity.TOP);
       Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage()));
 
     } on FirebaseAuthException catch(error){
@@ -73,7 +80,7 @@ class _SignInScreenState extends State<SignInScreen> {
       Fluttertoast.showToast(msg: "can't log you in with that username & password", gravity: ToastGravity.TOP);
     }
   }
-
+  //Text....
   Row signUpOption(){
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

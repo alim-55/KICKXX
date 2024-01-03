@@ -35,6 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text("2nd page"),
@@ -82,7 +83,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   FocusScope.of(context).unfocus();
                 }),
                 SizedBox(height: 20),
+
                 firebaseButton(context, "Sign Up", ()=>_signup(_mailTextController.text, _passwordTextController.text)),
+                SizedBox(height: 5),
+
+                signInOption()
               ],
             ),
           ),
@@ -90,6 +95,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       ),
     );
+
+
   }
 
   /*Future addUserDetails(String name,String email,String phone) async{
@@ -99,7 +106,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'Phone':phone,
     });
   }*/
+  Row signInOption() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Already have an account?",
+          style: TextStyle(color: Colors.white70),),
+        SizedBox(width: 10),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SignInScreen()));
+          },
+          child: Text(
+            "-Sign In",
+            style: TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
 
+      ],
+    );
+  }
 
 
   _signup(String _mailTextController, String _passwordTextController)async{
@@ -109,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return;
       }
       if (_phoneController.text.length !=11) {
-        Fluttertoast.showToast(msg: 'Phone number must be have 11 digits', gravity: ToastGravity.TOP);
+        Fluttertoast.showToast(msg: 'Phone number must have 11 digits', gravity: ToastGravity.TOP);
         return;
       }
      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _mailTextController, password: _passwordTextController);
