@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kickxx/productPage.dart';
 
 class ColoumWidget extends StatelessWidget {
   const ColoumWidget({Key? key}) : super(key: key);
@@ -27,14 +28,14 @@ class ColoumWidget extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.deepPurple,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
                         "HOT",
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.deepPurple,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -47,7 +48,11 @@ class ColoumWidget extends StatelessWidget {
                 ),
                 Expanded(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductPage(),
+                      ),
+                      );
+                    },
                     child: Container(
                       margin: EdgeInsets.all(10),
                       child: Image.network(

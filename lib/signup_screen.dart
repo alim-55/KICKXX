@@ -92,13 +92,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Future addUserDetails(String name,String email,String phone) async{
+  /*Future addUserDetails(String name,String email,String phone) async{
     await FirebaseFirestore.instance.collection('users').add({
       'User name': name,
       'Email':email,
       'Phone':phone,
     });
-  }
+  }*/
 
 
 
@@ -112,10 +112,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Fluttertoast.showToast(msg: 'Phone number must be have 11 digits', gravity: ToastGravity.TOP);
         return;
       }
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _mailTextController, password: _passwordTextController);
-      addUserDetails(_userNameTextController.text,
-          _mailTextController, _phoneController.text);
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>SignInScreen()));
+     UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _mailTextController, password: _passwordTextController);
+      //addUserDetails(_userNameTextController.text, _mailTextController, _phoneController.text);
+     final docUser= FirebaseFirestore.instance.collection("users").doc(userCredential.user!.email);
+      final json={
+        'User name': _userNameTextController.text,
+        'Email': _mailTextController,
+        'Phone':_phoneController.text,
+      };
+      await docUser.set(json);
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage()));
 
     } on FirebaseAuthException catch(error){
       Fluttertoast.showToast(msg: error.message!, gravity: ToastGravity.TOP);
