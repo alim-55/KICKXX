@@ -6,7 +6,7 @@ class NotificationPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'KICKXX',
+          'Notifications',
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
         centerTitle: true,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kickxx/product.dart';
+import 'package:kickxx/itemPage.dart';
 
 List<String> Events = [
   "Black Friday",
@@ -79,15 +80,21 @@ class RowItemsWidget extends StatelessWidget {
                           ),
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 2,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(
-                              Icons.shopping_cart,
-                              size: 30,
-                              color: Colors.deepPurple,
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ItemPage(),
+                                  ),
+                                );
+                              },
+                              icon: Icon(Icons.shopping_cart, color: Colors.deepPurple,),
                             ),
                           ],
                         ),
