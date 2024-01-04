@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kickxx/reset_password.dart';
 import 'HomePage.dart';
+import 'main.dart';
 import 'reusable_widget.dart';
 import 'signup_screen.dart';
 import 'reset_password.dart';
@@ -73,7 +74,7 @@ class _SignInScreenState extends State<SignInScreen> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextController, password: _passwordTextController);
       final currentUser =FirebaseAuth.instance.currentUser!;
       Fluttertoast.showToast(msg: "Successfully logged in as ${currentUser.email}", gravity: ToastGravity.TOP);
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>HomeWithBottomNavigation()));
 
     } on FirebaseAuthException catch(error){
       print('Error Code: ${error.code}');

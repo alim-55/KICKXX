@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kickxx/HomePage.dart';
 import 'package:kickxx/signin_screen.dart';
+import 'main.dart';
 import 'reusable_widget.dart';
 import 'HomePage.dart';
 
@@ -212,7 +213,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       };
       await docUser.set(json);
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>HomePage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>HomeWithBottomNavigation()));
 
     } on FirebaseAuthException catch(error){
       Fluttertoast.showToast(msg: error.message!, gravity: ToastGravity.TOP);
