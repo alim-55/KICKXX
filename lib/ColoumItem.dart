@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kickxx/itemPage.dart';
 import 'package:kickxx/productPage.dart';
 
 class ColoumWidget extends StatelessWidget {
@@ -49,7 +50,7 @@ class ColoumWidget extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductPage(),
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ItemPage(),
                       ),
                       );
                     },
