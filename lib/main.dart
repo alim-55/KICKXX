@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:kickxx/signin_screen.dart';
 import 'HomePage.dart';
-
+import 'package:kickxx/BottomNavigation.dart';
 import 'firebase_options.dart';
 
 
@@ -17,10 +17,10 @@ void main() async {
 }
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
 
 class _MyAppState extends State<MyApp> {
   var islogin=false;
@@ -33,7 +33,6 @@ class _MyAppState extends State<MyApp> {
 
         });
       }
-
     });
   }
   void initState(){
@@ -42,13 +41,22 @@ class _MyAppState extends State<MyApp> {
   }
   @override
   Widget build(BuildContext context) {
-    //auth.signOut();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-    home: islogin? HomePage(): SignInScreen(),
+      home: islogin ? HomeWithBottomNavigation() : SignInScreen(),
     );
   }
 }
+
+class HomeWithBottomNavigation extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BottomNavigation(),
+    );
+  }
+}
+
 
 /*class MyApp extends  StatefulWidget{
   const MyApp({super.key});
