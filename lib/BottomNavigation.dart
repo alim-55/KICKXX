@@ -46,7 +46,7 @@ class _NavigateState extends State<BottomNavigation> {
       children: [
         Icon(icon, color: Colors.white),
         SizedBox(height: 0.5),
-        Text(label, style: TextStyle(color: Colors.white)),
+        Text(label, style: TextStyle(color: Colors.white,fontWeight:FontWeight.w600)),
       ],
     );
   }

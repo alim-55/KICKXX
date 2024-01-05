@@ -7,7 +7,7 @@ class FavoritePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Favourite',
-          style: TextStyle(color: Colors.white, fontSize: 20),
+          style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.w600,),
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
