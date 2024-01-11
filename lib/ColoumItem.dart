@@ -4,7 +4,7 @@ import 'package:kickxx/productPage.dart';
 
 class ColoumWidget extends StatelessWidget {
   const ColoumWidget({Key? key}) : super(key: key);
-
+  final bool isFav = false;
   @override
   Widget build(BuildContext context) {
     return GridView.count(
@@ -41,21 +41,27 @@ class ColoumWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Icon(
-                      Icons.add_box_outlined,
-                      color: Colors.deepPurple,
-                    )
+                    IconButton(
+                      onPressed: () => {},
+                      icon: Icon(
+                        Icons.favorite_border_sharp,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
                   ],
                 ),
                 Expanded(
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ItemPage(),
-                      ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ItemPage(),
+                        ),
                       );
                     },
                     child: Container(
-                      margin: EdgeInsets.all(10),
+                      margin: EdgeInsets.all(1),
                       child: Image.network(
                           'https://www.kickgame.co.uk/cdn/shop/products/Air-Jordan-1-Low-CQ4277-001-Travis_1.png?v=1659088883'),
                       width: 100,
@@ -102,10 +108,12 @@ class ColoumWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Icon(
-                        Icons.shopping_cart,
-                        color: Colors.deepPurple,
-                      )
+                      IconButton(
+                          onPressed: () => {},
+                          icon: Icon(
+                            Icons.shopping_cart_sharp,
+                            color: Colors.deepPurple,
+                          ))
                     ],
                   ),
                 )

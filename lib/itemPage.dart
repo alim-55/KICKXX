@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
 class ItemPage extends StatefulWidget {
   const ItemPage({Key? key}) : super(key: key);
 
@@ -9,7 +12,7 @@ class ItemPage extends StatefulWidget {
 class _ItemPageState extends State<ItemPage> {
   int? selectedSize;
 
-  //List<String> _images = List.generate(4, (index) => "";
+  List<String> _images = List.generate(4, (index) => "assets/shoe1.png");
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +35,28 @@ class _ItemPageState extends State<ItemPage> {
                   'https://www.kickgame.co.uk/cdn/shop/products/Air-Jordan-1-Low-CQ4277-001-Travis_1.png?v=1659088883',
                 ),
               ),
-              SizedBox(height: 3,),
-              /*Row(
+              SizedBox(
+                height: 3,
+              ),
+              Row(
                 children: [
-                  for(int i = 0;i<_images.lenght;i++)
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8),
+                  for (int i = 0; i < 4; i++)
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white70,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Image.asset(
+                        _images[i],
+                        width: 70,
+                      ),
                     ),
-                    child: Image.asset(_images[],width: 70,),
-                  ),
                 ],
-              ),*/
+              ),
               SizedBox(
                 height: 40,
               ),
@@ -75,7 +86,9 @@ class _ItemPageState extends State<ItemPage> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Container(
                           padding: EdgeInsets.all(7),
                           decoration: BoxDecoration(
@@ -92,7 +105,9 @@ class _ItemPageState extends State<ItemPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Container(
                       padding: EdgeInsets.all(7),
                       decoration: BoxDecoration(
@@ -106,36 +121,48 @@ class _ItemPageState extends State<ItemPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 5,),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Container(
                       child: Row(
                         children: [
-                          Text('Selling by : Nike',
+                          Text(
+                            'Selling by : Nike',
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.deepPurple,
-                            ),),
-                          SizedBox(width: 180,),
-                          IconButton(onPressed: ()=>{}, icon: Icon(
-                            Icons.account_circle_outlined,
-                            color: Colors.deepPurple,))
+                            ),
+                          ),
+                          SizedBox(
+                            width: 180,
+                          ),
+                          IconButton(
+                              onPressed: () => {},
+                              icon: Icon(
+                                Icons.account_circle_outlined,
+                                color: Colors.deepPurple,
+                              ))
                         ],
                       ),
                     ),
-                    SizedBox(height: 1,),
+                    SizedBox(
+                      height: 1,
+                    ),
                     Container(
                       child: Column(
                         children: [
-                          Text('Description :',style:
-                          TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepPurple,
-                            fontSize: 16,
-                          ),),
+                          Text(
+                            'Description :',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple,
+                              fontSize: 16,
+                            ),
+                          ),
                           Text(
                               'Building off the success of their previous collaborations, Travis Scott adds yet another new design to his collaborative relationship with Jumpman via the Air Jordan 1 Low Travis Scott, now available on StockX. Travis teased the release of this shoe while on his Astroworld tour, leaving fans of both his music and the Jordan Brand alike with one question: When are these shoes dropping? On the Friday night of July 19, 2019, Travis answered the masses by making them available on his website, with a release on the SNKRS app following the next day.'
-                                  'This AJ 1 Low features a black upper with dark brown overlays and red accents on the branding. Much like the Air Jordan 1 High Travis Scott, La Flame added his signature backwards Swoosh logo on the lateral side. Cactus Jack insignias on the heel and inner upper atopa sail midsole and dark brown outsole completes the design. These sneakers released in July of 2019 and retailed for \$ 130.'
-                          )
+                              'This AJ 1 Low features a black upper with dark brown overlays and red accents on the branding. Much like the Air Jordan 1 High Travis Scott, La Flame added his signature backwards Swoosh logo on the lateral side. Cactus Jack insignias on the heel and inner upper atopa sail midsole and dark brown outsole completes the design. These sneakers released in July of 2019 and retailed for \$ 130.')
                         ],
                       ),
                     ),
@@ -162,24 +189,24 @@ class _ItemPageState extends State<ItemPage> {
                           },
                           items: List.generate(11, (index) => index + 38)
                               .map((size) => DropdownMenuItem<int>(
-                            value: size,
-                            child: Text(
-                              '$size',
-                              style: TextStyle(
-                                color: Colors.deepPurple,
-                              ),
-                            ),
-                          ))
+                                    value: size,
+                                    child: Text(
+                                      '$size',
+                                      style: TextStyle(
+                                        color: Colors.deepPurple,
+                                      ),
+                                    ),
+                                  ))
                               .toList(),
                         ),
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Column(
                       children: [
-                        Container(
-
-                        ),
+                        Container(),
                       ],
                     ),
                   ],
@@ -190,7 +217,7 @@ class _ItemPageState extends State<ItemPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: ()=>{
+        onPressed: () => {
           //cart e jabe
         },
         child: Container(

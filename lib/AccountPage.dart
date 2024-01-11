@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:kickxx/add_product.dart';
 import 'package:kickxx/reusable_widget.dart';
 import 'package:kickxx/signin_screen.dart';
 import 'package:provider/provider.dart';
@@ -183,6 +184,15 @@ class _AccountPageState extends State<AccountPage> {
                     onPressed: () => editField('Phone'),
                   ),
                   SizedBox(height: 10),
+
+                  firebaseButton(context, "Add items to your list ", () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddProduct()));
+                  }),
+
+                  SizedBox(height: 10),
                   firebaseButton(context, "Logout", () {
                     FirebaseAuth.instance.signOut();
                     Navigator.push(
@@ -209,7 +219,7 @@ class _AccountPageState extends State<AccountPage> {
       return NetworkImage(imagePath);
     } else {
       // If no profile picture is available, you can use a placeholder or default image.
-      return AssetImage("assets/default_profile_image.png");
+      return AssetImage("assets/prof_bg3.png");
     }
   }
 }
