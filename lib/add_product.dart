@@ -88,7 +88,7 @@ class AddProduct extends StatelessWidget {
                   hintColor: Colors.white,
                   hintFontSize: 14.0,
                   borderColor: Colors.transparent,
-                  selectedOptionBackgroundColor:Colors.purple,
+                  selectedOptionBackgroundColor:Colors.white70,
                   optionsBackgroundColor:Colors.deepPurple[100],
 
                   selectionType: SelectionType.multi,
@@ -140,91 +140,37 @@ class AddProduct extends StatelessWidget {
             Center(
               
               child: Container(
-                child: DropdownButtonHideUnderline(
-                
-                  child: DropdownButton2<String>(
-                    isExpanded: true,
-                    hint: const Row(
-                      children: [
-                
-                        Expanded(
-                          child: Text(
-                            'Select Shoe Catagory',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    items: items
-                        .map((String item) => DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(
-                        item,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          //fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ))
-                        .toList(),
-                    value: selectedValue,
-                    onChanged: (value) {
-                      //setState(() {
-                        selectedValue = value;
-                    //  }
-                    //  );
-                    },
-                
-                    buttonStyleData: ButtonStyleData(
-                      height: 50,
-                      width: 360,
-                      padding: const EdgeInsets.only(left: 14, right: 14),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                child: MultiSelectDropDown(
+                  controller: _controller,
+                  onOptionSelected: (List<ValueItem> selectedOptions) {},
+                  options: const <ValueItem>[
+                    ValueItem(label: 'Nike Lifestyle', value: '1'),
+                    ValueItem(label: 'Nike Jordan',value: '2'),
+                    ValueItem(label: 'Nike Air Max', value: '3'),
+                    ValueItem(label: 'Nike Air Force 1', value: '4'),
+                    ValueItem(label: 'Nike Dunks & Blazers', value: '5'),
+                    ValueItem(label: 'Nike Basketball', value: '6'),
+                    ValueItem(label: 'Nike Running', value: '7'),
+                    ValueItem(label: 'Nike Sandal & Slides', value: '8'),
 
-                        border: Border.all(
-                          color: Colors.black26,
-                        ),
-                        color: Colors.deepPurple[300],
-                      ),
-                      elevation: 2,
-                    ),
-                    iconStyleData: const IconStyleData(
-                      icon: Icon(
-                        Icons.arrow_drop_down,
-                      ),
-                      iconSize: 24,
-                      iconEnabledColor: Colors.black,
-                      iconDisabledColor: Colors.grey,
-                    ),
-                    dropdownStyleData: DropdownStyleData(
-                      padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
 
-                      maxHeight: 250,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: Colors.deepPurple[200],
-                      ),
-                      offset: const Offset(-20, 0),
-                      scrollbarTheme: ScrollbarThemeData(
-                        radius: const Radius.circular(40),
-                        thickness: MaterialStateProperty.all(6),
-                        thumbVisibility: MaterialStateProperty.all(true),
-                      ),
-                    ),
-                    menuItemStyleData: const MenuItemStyleData(
-                      height: 40,
-                      padding: EdgeInsets.only(left: 14, right: 14),
-                    ),
-                  ),
+                  ],
+                  hint: "Select Shoe catagory",
+                  hintColor: Colors.white,
+                  hintFontSize: 18.0,
+                  borderColor: Colors.transparent,
+                  selectedOptionBackgroundColor:Colors.white70,
+                  optionsBackgroundColor:Colors.deepPurple[100],
+
+                  //selectedOptionTextColor: Colors.white,
+
+                  selectionType: SelectionType.single,
+                  chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+                  dropdownHeight: 300,
+                  borderRadius: 20.0,
+                  fieldBackgroundColor:Colors.white.withOpacity(0.3),
+                  optionTextStyle: const TextStyle(fontSize: 16),
+                  selectedOptionIcon: const Icon(Icons.check_circle),
                 ),
               ),
             ),
