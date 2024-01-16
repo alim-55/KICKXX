@@ -16,7 +16,7 @@ class _NavigateState extends State<BottomNavigation> {
   final screens = [
     HomePage(),
     FavoritePage(),
-    NotificationPage(),
+    NotificationPage(payload: 'nothing',),
     AccountPage(),
   ];
 

@@ -1,15 +1,15 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:kickxx/Notification_Service.dart';
 import 'package:kickxx/reset_password.dart';
 import 'HomePage.dart';
+import 'NotificationPage.dart';
 import 'main.dart';
 import 'reusable_widget.dart';
 import 'signup_screen.dart';
 import 'reset_password.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -19,6 +19,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  late final LocalNotificationService service;
+
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
   FocusNode f1 = FocusNode();
@@ -27,7 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<String> getUserNameFromFirestore(String email) async {
     try {
       var userDoc =
-      await FirebaseFirestore.instance.collection("users").doc(email).get();
+          await FirebaseFirestore.instance.collection("users").doc(email).get();
       if (userDoc.exists) {
         return userDoc.data()?["User name"] ?? "User";
       } else {
@@ -38,6 +40,14 @@ class _SignInScreenState extends State<SignInScreen> {
       return "User";
     }
   }
+
+  void initState() {
+    service = LocalNotificationService();
+    service.initialize();
+    listenToNotification();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,18 +56,18 @@ class _SignInScreenState extends State<SignInScreen> {
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                Colors.black,
-                Colors.deepPurple,
-                Colors.black,
-                Colors.deepPurple,
-                Colors.black,
-                Colors.deepPurple,
-                Colors.black
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            )),
+          colors: [
+            Colors.black,
+            Colors.deepPurple,
+            Colors.black,
+            Colors.deepPurple,
+            Colors.black,
+            Colors.deepPurple,
+            Colors.black
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        )),
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.fromLTRB(
@@ -71,30 +81,26 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(height: 30),
                 reusableTextField("Password", Icons.lock_outline, true,
                     _passwordTextController, f2, f2, context, () {
-                      FocusScope.of(context).unfocus();
-                    }),
+                  FocusScope.of(context).unfocus();
+                }),
                 SizedBox(height: 3),
                 forgetPass(context),
                 firebaseButton(
                   context,
                   "Sign In",
-                      () async {
+                  () async {
                     String userName = await getUserNameFromFirestore(
                         _emailTextController.text);
                     _signin(_emailTextController.text,
                         _passwordTextController.text);
 
                     // Create notification after signing in
-                    AwesomeNotifications().createNotification(
-                      content: NotificationContent(
-                        id: 01,
-                        channelKey: "basic_channel",
-                        title: "Hello $userName",
-                        body: "Welcome to KICKXX, Let's buy sneakers.",
-                        //color: Colors.deepPurple,
-                        //backgroundColor: Colors.deepPurple,
-                      ),
-
+                    await service.showNotificationWithPayload(
+                      id: 0,
+                      title: 'Welcome $userName',
+                      body: 'Lets buy your dream sneakers.',
+                      payload:
+                          'Hey $userName, Explore the latest and hottest sneaker releases from top brands. ',
                     );
                   },
                 ),
@@ -173,5 +179,19 @@ class _SignInScreenState extends State<SignInScreen> {
         },
       ),
     );
+  }
+
+  void listenToNotification() =>
+      service.onNotificationClick.stream.listen(onNoticationListener);
+
+  void onNoticationListener(String? payload) {
+    if (payload != null && payload.isNotEmpty) {
+      print('payload $payload');
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: ((context) => NotificationPage(payload: payload))));
+    }
   }
 }

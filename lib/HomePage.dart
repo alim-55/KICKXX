@@ -35,6 +35,12 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
+        leading: IconButton(
+          onPressed: () {
+            // Handle the menu button press
+          },
+          icon: Icon(Icons.menu, color: Colors.white),
+        ),
         actions: [
           Stack(
             alignment: Alignment.topRight,
@@ -45,12 +51,12 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
               ),
               Consumer<cartProvider>(builder: (context, value, child) => badges.Badge(
-                  badgeContent: Text(
-                    value.getCounter().toString(),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  position: badges.BadgePosition.topEnd(top: 0, end: 0),
-                ))
+                badgeContent: Text(
+                  value.getCounter().toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                position: badges.BadgePosition.topEnd(top: 0, end: 0),
+              ))
             ],
           ),
         ],

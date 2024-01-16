@@ -1,84 +1,58 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:kickxx/CartProvider.dart';
+import 'package:kickxx/NotificationPage.dart';
+import 'package:kickxx/Notification_Service.dart';
 import 'package:kickxx/signin_screen.dart';
 import 'package:provider/provider.dart';
 import 'HomePage.dart';
 import 'package:kickxx/BottomNavigation.dart';
 import 'firebase_options.dart';
-import 'notification_controller.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await AwesomeNotifications().initialize(
-      null,//'resource://drawable/app_icon.png',
-      [
-        NotificationChannel(
-          channelGroupKey: "basic_Channel_group",
-          channelKey: "basic_channel",
-          channelName: "Basic Notification",
-          channelDescription: "Basic Notification Channel",
-          //defaultColor: Colors.deepPurple,
-        )
+   await LocalNotificationService.requestNotificationPermission();
+  // await NotificationServices().init();
 
-      ],
-      channelGroups: [
-        NotificationChannelGroup(
-          channelGroupKey: "basic_Channel_group",
-          channelGroupName: "Basic Group",
-        )
-      ]
-  );
-  bool isAllowedToSendNotification=
-  await AwesomeNotifications().isNotificationAllowed();
-  if(!isAllowedToSendNotification){
-    AwesomeNotifications().requestPermissionToSendNotifications();
-  }
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  //static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
-
 class _MyAppState extends State<MyApp> {
-  var islogin=false;
-  var auth=FirebaseAuth.instance;
-  checkifLogin()async{
+  var islogin = false;
+  var auth = FirebaseAuth.instance;
+  checkifLogin() async {
     auth.authStateChanges().listen((User? user) {
-      if(user!= null &&mounted){
+      if (user != null && mounted) {
         setState(() {
-          islogin=true;
-
+          islogin = true;
         });
       }
     });
   }
-  void initState(){
+
+  void initState() {
     checkifLogin();
-    AwesomeNotifications().setListeners(
-      onActionReceivedMethod: NotificationController.onActionReceivedMethod,
-      onNotificationCreatedMethod: NotificationController.onNotificationCreatedMethod,
-      onNotificationDisplayedMethod: NotificationController.onNotificationDisplayedMethod,
-      onDismissActionReceivedMethod: NotificationController.onDismissActionReceivedMethod,
-    );
     super.initState();
   }
+
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (_) => cartProvider(),
+      create: (_) => cartProvider(),
       child: Builder(builder: (BuildContext){
         return MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -97,7 +71,6 @@ class HomeWithBottomNavigation extends StatelessWidget {
     );
   }
 }
-
 
 /*class MyApp extends  StatefulWidget{
   const MyApp({super.key});
