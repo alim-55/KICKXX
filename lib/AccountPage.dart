@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:kickxx/add_product.dart';
 import 'package:kickxx/reusable_widget.dart';
+import 'package:kickxx/seller_profile.dart';
 import 'package:kickxx/signin_screen.dart';
 import 'package:provider/provider.dart';
 import 'signup_screen.dart';
@@ -43,7 +45,22 @@ class _AccountPageState extends State<AccountPage> {
             hintStyle: TextStyle(color: Colors.grey),
           ),
           onChanged: (value) {
-            newValue = value;
+
+            if(field=="Phone"){
+              try{
+                if(value.length!=11){
+                  Fluttertoast.showToast(msg: 'Phone number must have 11 digits', gravity: ToastGravity.TOP);
+                  return;
+                }
+                newValue = value;
+              }catch(error){
+                //Fluttertoast.showToast(msg: 'Phone number must have 11 digits', gravity: ToastGravity.TOP);
+              }
+            }
+            else{
+              newValue = value;
+            }
+
           },
         ),
         actions: [
@@ -175,12 +192,14 @@ class _AccountPageState extends State<AccountPage> {
                   TextBox(
                     text: userData["User name"],
                     sectionName: 'Username',
+                    iconData: Icons.edit,
                     onPressed: () => editField('User name'),
                   ),
                   SizedBox(height: 10),
                   TextBox(
                     text: userData["Phone"],
                     sectionName: 'Phone',
+                    iconData: Icons.edit,
                     onPressed: () => editField('Phone'),
                   ),
                   SizedBox(height: 10),
@@ -193,6 +212,16 @@ class _AccountPageState extends State<AccountPage> {
                   }),
 
                   SizedBox(height: 10),
+
+                  firebaseButton(context, "Seller account", () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Seller_Profile()));
+                  }),
+
+                  SizedBox(height: 10),
+
                   firebaseButton(context, "Logout", () {
                     FirebaseAuth.instance.signOut();
                     Navigator.push(
