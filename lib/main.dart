@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:kickxx/CartProvider.dart';
 import 'package:kickxx/signin_screen.dart';
+import 'package:provider/provider.dart';
 import 'HomePage.dart';
 import 'package:kickxx/BottomNavigation.dart';
 import 'firebase_options.dart';
@@ -75,9 +77,14 @@ class _MyAppState extends State<MyApp> {
   }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: islogin ? HomeWithBottomNavigation() : SignInScreen(),
+    return ChangeNotifierProvider(
+        create: (_) => cartProvider(),
+      child: Builder(builder: (BuildContext){
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: islogin ? HomeWithBottomNavigation() : SignInScreen(),
+        );
+      } ,),
     );
   }
 }
