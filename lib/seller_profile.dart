@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kickxx/ChatPage.dart';
 import 'text_box.dart';
 class Seller_Profile extends StatefulWidget {
   final DocumentSnapshot sellerData;
@@ -61,7 +62,7 @@ class _Seller_ProfileState extends State<Seller_Profile> {
             SizedBox(height: 20),
             Center(
               child: Text(
-                sellerData['Email']  , // Adjust the field name accordingly
+                sellerData['Email']  ,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -77,7 +78,6 @@ class _Seller_ProfileState extends State<Seller_Profile> {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
-            // Display seller details (adjust field names accordingly)
             TextBox(
               text: sellerData['User name'] ,
               iconData: Icons.message_rounded,
@@ -95,13 +95,22 @@ class _Seller_ProfileState extends State<Seller_Profile> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatPage(receiverUserId: sellerData['User name'], receiverUserEmail: sellerData['Email'])),
+          );
+        },
+        child: Icon(Icons.message),
+        backgroundColor: Colors.deepPurple,
+      ),
     );
   }
   ImageProvider<Object>? _selectedImage(String? imagePath) {
     if (imagePath != null && imagePath.isNotEmpty) {
       return NetworkImage(imagePath);
     } else {
-      // If no profile picture is available, you can use a placeholder or default image.
       return AssetImage("assets/prof_bg3.png");
     }
   }
