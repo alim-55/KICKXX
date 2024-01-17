@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.deepPurple,
         leading: IconButton(
           onPressed: () {
-            // Handle the menu button press
+
           },
           icon: Icon(Icons.menu, color: Colors.white),
         ),

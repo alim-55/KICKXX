@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:kickxx/ChatPage.dart';
 
 class ItemPage extends StatefulWidget {
   const ItemPage({Key? key}) : super(key: key);
@@ -138,11 +139,22 @@ class _ItemPageState extends State<ItemPage> {
                             width: 180,
                           ),
                           IconButton(
-                              onPressed: () => {},
-                              icon: Icon(
-                                Icons.account_circle_outlined,
-                                color: Colors.deepPurple,
-                              ))
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatPage(
+                                    receiverUserId: 'a',
+                                    receiverUserEmail: 'e@gmail.com',
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.account_circle_outlined,
+                              color: Colors.deepPurple,
+                            ),
+                          )
                         ],
                       ),
                     ),

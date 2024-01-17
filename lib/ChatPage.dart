@@ -69,7 +69,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     var alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid)
-        ? Alignment.centerRight // Corrected the alignment for the sender
+        ? Alignment.centerRight
         : Alignment.centerLeft;
     return Container(
       alignment: alignment,

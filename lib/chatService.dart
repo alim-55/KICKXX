@@ -23,8 +23,10 @@ class ChatService extends ChangeNotifier {
     List<String> ids = [currentUser, receiverId];
     ids.sort();
     String chatRoomId = ids.join("-");
-    await _firestore.collection('chatRoom').doc(chatRoomId).collection('messages');
+    CollectionReference messagesCollection = _firestore.collection('chatRoom').doc(chatRoomId).collection('messages');
+    await messagesCollection.add(newMessage.toMap());
   }
+
 
   Stream<QuerySnapshot> getMessage(String userId, String otherUserId) {
     List<String> ids = [userId, otherUserId];
