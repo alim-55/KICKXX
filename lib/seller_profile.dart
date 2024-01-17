@@ -88,6 +88,17 @@ class _Seller_ProfileState extends State<Seller_Profile> {
             // rn Center(child: CircularProgressIndicator());
 
         ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {
+          //messagebox e jabe
+        },
+        child: Container(
+          child: Icon(
+            Icons.message,
+            color: Colors.deepPurple,
+          ),
+        ),
+      ),
 
   );
   }
