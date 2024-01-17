@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:kickxx/CartModel.dart';
+import 'package:kickxx/CartProvider.dart';
+import 'package:kickxx/DatabaseHelper.dart';
 import 'package:kickxx/itemPage.dart';
 import 'package:kickxx/productPage.dart';
+import 'package:provider/provider.dart';
 
-class ColoumWidget extends StatelessWidget {
-  const ColoumWidget({Key? key}) : super(key: key);
-  final bool isFav = false;
+
+class ColoumWidget extends StatefulWidget {
+  ColoumWidget({Key? key}) : super(key: key);
+
+  @override
+  State<ColoumWidget> createState() => _ColoumWidgetState();
+}
+
+class _ColoumWidgetState extends State<ColoumWidget> {
+  DatabaseHelper dbHelper = DatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<cartProvider>(context);
     return GridView.count(
       childAspectRatio: .68,
       shrinkWrap: true,
@@ -110,9 +123,23 @@ class ColoumWidget extends StatelessWidget {
                       ),
                       IconButton(
                           onPressed: () => {},
-                          icon: Icon(
-                            Icons.shopping_cart_sharp,
-                            color: Colors.deepPurple,
+                          icon: InkWell(
+                            onTap: ()  {
+                               dbHelper.insert(cartModel(
+                                  name: 'Jordan 1 Cactus Jack',
+                                  imageURL:
+                                  'https://www.kickgame.co.uk/cdn/shop/products/Air-Jordan-1-Low-CQ4277-001-Travis_1.png?v=1659088883',
+                                  price: 250,
+                                  quantitiy: 1,
+                                  finalPrice: 250 * 1));
+                              cart.addCounter();
+                              cart.addTotalPrice(250);
+                              print('Product is added to the cart');
+                            },
+                            child: Icon(
+                              Icons.shopping_cart_sharp,
+                              color: Colors.deepPurple,
+                            ),
                           ))
                     ],
                   ),

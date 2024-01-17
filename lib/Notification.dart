@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
-class FavoritePage extends StatelessWidget {
+class NotificationP extends StatelessWidget {
+  Map<String, String?> payload = {};
+
   @override
   Widget build(BuildContext context) {
+    payload = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -18,15 +22,8 @@ class FavoritePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.deepPurple, Colors.purple],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+      body: Center(
+        child: Text('This is a notification page! $payload', style: TextStyle(fontSize: 20)),
       ),
     );
   }
