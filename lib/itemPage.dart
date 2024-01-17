@@ -154,41 +154,39 @@ class _ItemPageState extends State<ItemPage> {
                             width: 180,
                           ),
 
-                      StreamBuilder<DocumentSnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('users') // Change to your users collection
-                            .doc(productData['sellerId'])
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          }
+                          StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('users') // Change to your users collection
+                                .doc(productData['sellerId'])
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              }
 
-                          if (!snapshot.hasData || snapshot.data == null) {
-                            print('Seller data not found');
-                            return Text('Seller not found');
-                          }
+                              if (!snapshot.hasData || snapshot.data == null) {
+                                print('Seller data not found');
+                                return Text('Seller not found');
+                              }
 
-                          var sellerData = snapshot.data!;
-                          print('Seller data: ${sellerData.data()}');
-                          return IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Seller_Profile(sellerData: sellerData),
+                              var sellerData = snapshot.data!;
+                              print('Seller data: ${sellerData.data()}');
+                              return IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Seller_Profile(sellerData: sellerData),
+                                    ),
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.account_circle_outlined,
+                                  color: Colors.deepPurple,
                                 ),
                               );
                             },
-                            icon: Icon(
-                              Icons.account_circle_outlined,
-                              color: Colors.deepPurple,
-                            ),
-                          );
-                        },
-                      ),
-
-
+                          ),
 
                         ],
                       ),
