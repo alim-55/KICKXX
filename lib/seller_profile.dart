@@ -52,7 +52,7 @@ class _Seller_ProfileState extends State<Seller_Profile> {
                     child: CircleAvatar(
                       radius: 77,
                       backgroundColor: Colors.white,
-                       backgroundImage: _selectedImage(sellerData['profilePicture']),
+                      backgroundImage: _selectedImage(sellerData['profilePicture']),
                     ),
                   ),
                 ],

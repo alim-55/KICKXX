@@ -33,7 +33,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
           shrinkWrap: true,
           crossAxisCount: 2,
           crossAxisSpacing :15.0,
-         // mainAxisSpacing: 10.0,
+          // mainAxisSpacing: 10.0,
           padding: EdgeInsets.all(6.0),
           physics: NeverScrollableScrollPhysics(),
           children: [
@@ -67,7 +67,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
 
       decoration:BoxDecoration(
         color: Colors.white60,
-      borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(20.0),
       ),
 
 
@@ -140,26 +140,26 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                   ),
                 ),
                 Row(
-                  children: [
-                  Text(
-                    'Price: \$${productData['productPrice'] ?? ''}',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.deepPurple,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                    Expanded(
-                      child: IconButton(
-                        onPressed: () => {},
-                        icon: Icon(
-                      
-                          Icons.shopping_cart_sharp,
+                    children: [
+                      Text(
+                        'Price: \$${productData['productPrice'] ?? ''}',
+                        style: TextStyle(
+                          fontSize: 15,
                           color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    )
-                ]
+                      Expanded(
+                        child: IconButton(
+                          onPressed: () => {},
+                          icon: Icon(
+
+                            Icons.shopping_cart_sharp,
+                            color: Colors.deepPurple,
+                          ),
+                        ),
+                      )
+                    ]
                 ),
 
               ],
