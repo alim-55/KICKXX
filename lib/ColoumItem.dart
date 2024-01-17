@@ -14,9 +14,9 @@ class _ColoumWidgetState extends State<ColoumWidget> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('products').snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        }
+        // if (snapshot.connectionState == ConnectionState.waiting) {
+        //   return CircularProgressIndicator();
+        // }
 
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
