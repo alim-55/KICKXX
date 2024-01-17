@@ -14,30 +14,37 @@ class ItemPage extends StatefulWidget {
 class _ItemPageState extends State<ItemPage> {
   int? selectedSize;
   List<String> availableSizes = [];
+  int selectedImageIndex = 0;
   void initState() {
     super.initState();
     // Retrieve sizes from the product document
     dynamic rawAvailableSizes = widget.product['shoeSizes'];
     if (rawAvailableSizes is List) {
-      availableSizes = List<String>.from(rawAvailableSizes.map((e) => e.toString()));
+      availableSizes =
+          List<String>.from(rawAvailableSizes.map((e) => e.toString()));
     } else if (rawAvailableSizes is String) {
       availableSizes.add(rawAvailableSizes.toString());
     }
   }
 
   @override
-
   Widget build(BuildContext context) {
     // Extract product data from the DocumentSnapshot
-    Map<String, dynamic> productData = widget.product.data() as Map<String, dynamic>;
+    Map<String, dynamic> productData =
+        widget.product.data() as Map<String, dynamic>;
 
     List<String> imageUrls = List<String>.from(productData['imageUrls'] ?? []);
     List<String> sizes = List<String>.from(productData['sizes'] ?? []);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product'),
+        title: Text(
+          'Product',
+          style: TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.deepPurple,
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -54,24 +61,47 @@ class _ItemPageState extends State<ItemPage> {
               SizedBox(
                 height: 3,
               ),
-              Row(
-                children: [
-                  for (String imageUrl in imageUrls)
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 4,
-                      ),
+              SizedBox(
+                height: 100,
+                width: 2000,
+                child: PageView.builder(
+                  itemCount: imageUrls.length,
+                  controller: PageController(viewportFraction: 0.2),
+                  onPageChanged: (int index) {
+                    setState(() {
+                      selectedImageIndex = index;
+                    });
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4),
                       decoration: BoxDecoration(
-                        color: Colors.white70,
+                        color: selectedImageIndex == index
+                            ? Colors.deepPurple.withOpacity(0.7)
+                            : Colors.white70,
                         borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: selectedImageIndex == index
+                              ? Colors.deepPurple
+                              : Colors.transparent,
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 3,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Image.network(
-                        imageUrl,
+                        imageUrls[index],
                         width: 70,
                       ),
-                    ),
-                ],
+                    );
+                  },
+                ),
               ),
               SizedBox(
                 height: 40,
@@ -153,14 +183,15 @@ class _ItemPageState extends State<ItemPage> {
                           SizedBox(
                             width: 180,
                           ),
-
                           StreamBuilder<DocumentSnapshot>(
                             stream: FirebaseFirestore.instance
-                                .collection('users') // Change to your users collection
+                                .collection(
+                                    'users') // Change to your users collection
                                 .doc(productData['sellerId'])
                                 .snapshots(),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
                                 return CircularProgressIndicator();
                               }
 
@@ -176,7 +207,8 @@ class _ItemPageState extends State<ItemPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => Seller_Profile(sellerData: sellerData),
+                                      builder: (context) => Seller_Profile(
+                                          sellerData: sellerData),
                                     ),
                                   );
                                 },
@@ -187,7 +219,6 @@ class _ItemPageState extends State<ItemPage> {
                               );
                             },
                           ),
-
                         ],
                       ),
                     ),
@@ -234,14 +265,14 @@ class _ItemPageState extends State<ItemPage> {
                           },
                           items: availableSizes
                               .map((size) => DropdownMenuItem<int>(
-                            value: int.parse(size),
-                            child: Text(
-                              size,
-                              style: TextStyle(
-                                color: Colors.deepPurple,
-                              ),
-                            ),
-                          ))
+                                    value: int.parse(size),
+                                    child: Text(
+                                      size,
+                                      style: TextStyle(
+                                        color: Colors.deepPurple,
+                                      ),
+                                    ),
+                                  ))
                               .toList(),
                         ),
                       ),
