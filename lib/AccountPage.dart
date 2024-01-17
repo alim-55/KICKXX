@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'signup_screen.dart';
 import 'signup_screen.dart';
 import 'text_box.dart';
-
+import 'added_items.dart';
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 
@@ -210,15 +210,22 @@ class _AccountPageState extends State<AccountPage> {
                         MaterialPageRoute(
                             builder: (context) => AddProduct()));
                   }),
-
                   SizedBox(height: 10),
-
-                  firebaseButton(context, "Seller account", () {
+                  firebaseButton(context, "ADDED ITEMS", () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Seller_Profile()));
+                            builder: (context) => AddedItemsPage()));
                   }),
+
+                  SizedBox(height: 10),
+
+                  // firebaseButton(context, "Seller account", () {
+                  //   Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => Seller_Profile()));
+                  // }),
 
                   SizedBox(height: 10),
 

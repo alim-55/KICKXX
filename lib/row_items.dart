@@ -1,3 +1,4 @@
+import 'itemPage.dart';
 import 'package:flutter/material.dart';
 import 'package:kickxx/product.dart';
 import 'package:kickxx/itemPage.dart';
@@ -87,12 +88,12 @@ class RowItemsWidget extends StatelessWidget {
                           children: [
                             IconButton(
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ItemPage(),
-                                  ),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => ItemPage(),
+                                //   ),
+                                // );
                               },
                               icon: Icon(Icons.shopping_cart, color: Colors.deepPurple,),
                             ),
