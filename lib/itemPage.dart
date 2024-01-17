@@ -1,10 +1,11 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:kickxx/ChatPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kickxx/seller_profile.dart';
 
 class ItemPage extends StatefulWidget {
-  const ItemPage({Key? key}) : super(key: key);
+  final DocumentSnapshot product;
+
+  const ItemPage({Key? key, required this.product}) : super(key: key);
 
   @override
   _ItemPageState createState() => _ItemPageState();
@@ -12,12 +13,26 @@ class ItemPage extends StatefulWidget {
 
 class _ItemPageState extends State<ItemPage> {
   int? selectedSize;
-
-  List<String> _images = List.generate(4, (index) => "assets/shoe1.png");
+  List<String> availableSizes = [];
+  void initState() {
+    super.initState();
+    // Retrieve sizes from the product document
+    dynamic rawAvailableSizes = widget.product['shoeSizes'];
+    if (rawAvailableSizes is List) {
+      availableSizes = List<String>.from(rawAvailableSizes.map((e) => e.toString()));
+    } else if (rawAvailableSizes is String) {
+      availableSizes.add(rawAvailableSizes.toString());
+    }
+  }
 
   @override
+
   Widget build(BuildContext context) {
-    List<String> sizes = List.generate(9, (index) => (38 + index).toString());
+    // Extract product data from the DocumentSnapshot
+    Map<String, dynamic> productData = widget.product.data() as Map<String, dynamic>;
+
+    List<String> imageUrls = List<String>.from(productData['imageUrls'] ?? []);
+    List<String> sizes = List<String>.from(productData['sizes'] ?? []);
 
     return Scaffold(
       appBar: AppBar(
@@ -33,7 +48,7 @@ class _ItemPageState extends State<ItemPage> {
                 width: 300,
                 height: 400,
                 child: Image.network(
-                  'https://www.kickgame.co.uk/cdn/shop/products/Air-Jordan-1-Low-CQ4277-001-Travis_1.png?v=1659088883',
+                  imageUrls.isNotEmpty ? imageUrls.first : '',
                 ),
               ),
               SizedBox(
@@ -41,7 +56,7 @@ class _ItemPageState extends State<ItemPage> {
               ),
               Row(
                 children: [
-                  for (int i = 0; i < 4; i++)
+                  for (String imageUrl in imageUrls)
                     Container(
                       padding: EdgeInsets.all(8),
                       margin: EdgeInsets.symmetric(
@@ -51,8 +66,8 @@ class _ItemPageState extends State<ItemPage> {
                         color: Colors.white70,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Image.asset(
-                        _images[i],
+                      child: Image.network(
+                        imageUrl,
                         width: 70,
                       ),
                     ),
@@ -80,7 +95,7 @@ class _ItemPageState extends State<ItemPage> {
                       children: [
                         Expanded(
                           child: Text(
-                            'Travis Scott X Air Jordan 1 Low',
+                            productData['productName'] ?? '',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -97,7 +112,7 @@ class _ItemPageState extends State<ItemPage> {
                             borderRadius: BorderRadius.circular(7),
                           ),
                           child: Text(
-                            '\$ 250',
+                            '\$ ${productData['productPrice'] ?? ''}',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -116,7 +131,7 @@ class _ItemPageState extends State<ItemPage> {
                         borderRadius: BorderRadius.circular(7),
                       ),
                       child: Text(
-                        'Quality : Brand New',
+                        'Quality : ${productData['productQuality'] ?? ''}',
                         style: TextStyle(
                           color: Colors.white,
                         ),
@@ -129,7 +144,7 @@ class _ItemPageState extends State<ItemPage> {
                       child: Row(
                         children: [
                           Text(
-                            'Selling by : Nike',
+                            'Selling by : ${productData['sellerName'] ?? ''}',
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.deepPurple,
@@ -138,23 +153,41 @@ class _ItemPageState extends State<ItemPage> {
                           SizedBox(
                             width: 180,
                           ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ChatPage(
-                                    receiverUserId: 'a',
-                                    receiverUserEmail: 'e@gmail.com',
-                                  ),
+
+                          StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('users') // Change to your users collection
+                                .doc(productData['sellerId'])
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              }
+
+                              if (!snapshot.hasData || snapshot.data == null) {
+                                print('Seller data not found');
+                                return Text('Seller not found');
+                              }
+
+                              var sellerData = snapshot.data!;
+                              print('Seller data: ${sellerData.data()}');
+                              return IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Seller_Profile(sellerData: sellerData),
+                                    ),
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.account_circle_outlined,
+                                  color: Colors.deepPurple,
                                 ),
                               );
                             },
-                            icon: Icon(
-                              Icons.account_circle_outlined,
-                              color: Colors.deepPurple,
-                            ),
-                          )
+                          ),
+
                         ],
                       ),
                     ),
@@ -173,8 +206,8 @@ class _ItemPageState extends State<ItemPage> {
                             ),
                           ),
                           Text(
-                              'Building off the success of their previous collaborations, Travis Scott adds yet another new design to his collaborative relationship with Jumpman via the Air Jordan 1 Low Travis Scott, now available on StockX. Travis teased the release of this shoe while on his Astroworld tour, leaving fans of both his music and the Jordan Brand alike with one question: When are these shoes dropping? On the Friday night of July 19, 2019, Travis answered the masses by making them available on his website, with a release on the SNKRS app following the next day.'
-                              'This AJ 1 Low features a black upper with dark brown overlays and red accents on the branding. Much like the Air Jordan 1 High Travis Scott, La Flame added his signature backwards Swoosh logo on the lateral side. Cactus Jack insignias on the heel and inner upper atopa sail midsole and dark brown outsole completes the design. These sneakers released in July of 2019 and retailed for \$ 130.')
+                            productData['productDescription'] ?? '',
+                          ),
                         ],
                       ),
                     ),
@@ -199,16 +232,16 @@ class _ItemPageState extends State<ItemPage> {
                               selectedSize = newValue;
                             });
                           },
-                          items: List.generate(11, (index) => index + 38)
+                          items: availableSizes
                               .map((size) => DropdownMenuItem<int>(
-                                    value: size,
-                                    child: Text(
-                                      '$size',
-                                      style: TextStyle(
-                                        color: Colors.deepPurple,
-                                      ),
-                                    ),
-                                  ))
+                            value: int.parse(size),
+                            child: Text(
+                              size,
+                              style: TextStyle(
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                          ))
                               .toList(),
                         ),
                       ),
@@ -216,11 +249,8 @@ class _ItemPageState extends State<ItemPage> {
                     SizedBox(
                       height: 10,
                     ),
-                    Column(
-                      children: [
-                        Container(),
-                      ],
-                    ),
+                    // Additional information about the product
+                    // ...
                   ],
                 ),
               ),
@@ -230,7 +260,7 @@ class _ItemPageState extends State<ItemPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
-          //cart e jabe
+          // Add to cart logic
         },
         child: Container(
           child: Icon(

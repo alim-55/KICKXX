@@ -13,7 +13,7 @@ Image logoWidget(String imageName) {
 
 TextField reusableTextField(
     String text,
-    IconData icon,
+    IconData? icon,
     bool isPasswordType,
     TextEditingController controller,
     FocusNode focusNode,

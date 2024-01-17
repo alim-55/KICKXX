@@ -1,31 +1,55 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:kickxx/reusable_widget.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'product_images.dart';
-class AddProduct extends StatelessWidget {
+class AddProduct extends StatefulWidget {
    AddProduct({super.key});
+
+  @override
+  State<AddProduct> createState() => _AddProductState();
+}
+
+class _AddProductState extends State<AddProduct> {
    TextEditingController _productnameTextController= TextEditingController();
+
    TextEditingController _productPriceTextController= TextEditingController();
+
    TextEditingController _sellernameTextController= TextEditingController();
+
    TextEditingController _productquantityTextController= TextEditingController();
+
    TextEditingController _productDescriptionTextController= TextEditingController();
+
    TextEditingController _brandNameTextController= TextEditingController();
+
    TextEditingController _colorTextController= TextEditingController();
 
    FocusNode f1 =FocusNode();
+
    FocusNode f2 =FocusNode();
+
    FocusNode f3 =FocusNode();
+
    FocusNode f4 =FocusNode();
+
    FocusNode f5 =FocusNode();
+
    FocusNode f6 =FocusNode();
+
    FocusNode f7 =FocusNode();
 
    final MultiSelectController _controller = MultiSelectController();
+   final MultiSelectController _shoeSizeController = MultiSelectController();
 
-
-
-   final List<String> items = [
+   /*final List<String> items = [
      'Nike Lifestyle',
      'Nike Jordan',
      'Nike Air Max',
@@ -34,7 +58,8 @@ class AddProduct extends StatelessWidget {
      'Nike Basketball',
      'Nike Running',
      'Nike Sandal & Slides',
-   ];
+   ];*/
+
    String? selectedValue;
 
   @override
@@ -49,7 +74,7 @@ class AddProduct extends StatelessWidget {
           color: Colors.deepPurple,
           child: Padding(
             padding: EdgeInsets.all(16.0),
-          
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -65,8 +90,8 @@ class AddProduct extends StatelessWidget {
                 SizedBox(height: 10.0),
                 reusableTextField("Enter Product's Quantity", Icons.pedal_bike, false, _productquantityTextController,f6,f7,context,(){}),
                 SizedBox(height: 10.0),
-                      
-                      
+
+
                 Container(
                     padding: EdgeInsets.only(left: 11),
                     child: const Text('Shoe Size',style: TextStyle(fontSize: 20),
@@ -75,7 +100,7 @@ class AddProduct extends StatelessWidget {
                   height: 4,
                 ),
                 MultiSelectDropDown(
-                  controller: _controller,
+                  controller: _shoeSizeController,
                   onOptionSelected: (List<ValueItem> selectedOptions) {},
                   options: const <ValueItem>[
                     ValueItem(label: '10', value: '1'),
@@ -107,7 +132,7 @@ class AddProduct extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        _controller.clearAllSelection();
+                        _shoeSizeController.clearAllSelection();
                       },
                       child: const Text('CLEAR'),
                     ),
@@ -125,10 +150,10 @@ class AddProduct extends StatelessWidget {
                     ),*/
                     ElevatedButton(
                       onPressed: () {
-                        if (_controller.isDropdownOpen) {
-                          _controller.hideDropdown();
+                        if (_shoeSizeController.isDropdownOpen) {
+                          _shoeSizeController.hideDropdown();
                         } else {
-                          _controller.showDropdown();
+                          _shoeSizeController.showDropdown();
                         }
                       },
                       child: const Text('SHOW/HIDE DROPDOWN'),
@@ -139,7 +164,7 @@ class AddProduct extends StatelessWidget {
                 SizedBox(height: 40),
 
             Center(
-              
+
               child: Container(
                 child: MultiSelectDropDown(
                   controller: _controller,
@@ -191,19 +216,28 @@ class AddProduct extends StatelessWidget {
                   children:<Widget>[ Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children:<Widget> [
-                      customimageField(),customimageField(),customimageField(),
+                      //customimageField(pickImages(0), pickImages()),customimageField(_pickedImage,pickImages),customimageField(_pickedImage,pickImages),
+                      customimageField(0, () => pickImages(0)),
+                      customimageField(1, () => pickImages(1)),
+                      customimageField(2, () => pickImages(2)),
                     ],
                   ),
                   SizedBox(height: 15),
-                  Row(
+                  /*Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children:<Widget> [
                       customimageField(),customimageField(),customimageField(),
                     ],
-                  ),],
+                  ),*/
+                  ],
+                ),
+                SizedBox(height: 15),
+                firebaseButton(context, "Add Product ", () =>uploadProduct()
+
                 ),
 
-                      
+
+
               ],
             ),
           ),
@@ -211,5 +245,150 @@ class AddProduct extends StatelessWidget {
       ),
     );
   }
+
+
+   List<File> productImages = [];
+   List<XFile?> _pickedImages = List.generate(3, (index) => null); // Adjust the size based on your needs
+
+   Future<void> pickImages(int index) async {
+
+     List<XFile>? pickedFiles;
+     try {
+       //List<XFile>? pickedFiles = await ImagePicker().pickMultiImage(source: ImageSource.gallery, imageQuality: 80);
+       final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+       if (pickedImage != null) {
+         setState(() {
+           //productImages = pickedFiles!.map((file) => File(file.path)).toList();
+           _pickedImages[index] = pickedImage;
+           productImages.add(File(pickedImage.path));
+         });
+       }
+     }catch (e) {
+       print('Error picking image: $e');
+     }
+   }
+
+   Future<void> uploadProduct() async {
+
+     try {
+       // if(_productPriceTextController.text.isEmpty||_sellernameTextController.text.isEmpty||_productquantityTextController.text.isEmpty||_productDescriptionTextController.text.isEmpty||_brandNameTextController.text.isEmpty||_colorTextController.text.isEmpty){
+       //   Fluttertoast.showToast(msg: 'Please fill in all fields', gravity: ToastGravity.TOP);
+       //   return;
+       // }
+       List<String> imageUrls = await uploadImagesToStorage(productImages);
+
+
+
+       final String sellerID = FirebaseAuth.instance.currentUser!.email.toString();
+
+
+
+
+       final productDoc = FirebaseFirestore.instance.collection("products")
+           .doc();
+
+       final productInfo = {
+         'productName': _productnameTextController.text,
+         'brandName': _brandNameTextController.text,
+         'color': _colorTextController.text,
+         'productDescription': _productDescriptionTextController.text,
+         'productPrice': double.parse(_productPriceTextController.text),
+         'productQuantity': int.parse(_productquantityTextController.text),
+         'shoeSizes': _shoeSizeController.selectedOptions.map((item) =>
+         item.label).toList(),
+         'category': selectedValue ?? "",
+         // Ensure to handle null case appropriately
+         'imageUrls': imageUrls,
+         'sellerId': sellerID,
+       };
+
+
+       await productDoc.set(productInfo);
+
+
+
+       print('Image URLs: $imageUrls');
+       print('Product uploaded successfully.');
+     }catch (e) {
+       print('Error uploading product: $e');
+     }
+   }
+
+   Future<List<String>> uploadImagesToStorage(List<File> images) async {
+     List<String> imageUrls = [];
+
+     try {
+       for (int i = 0; i < images.length; i++) {
+         File image = images[i];
+
+
+         String imagePath =
+             'products/${DateTime.now().millisecondsSinceEpoch}/image_$i.jpg';
+
+
+         UploadTask uploadTask =
+         FirebaseStorage.instance.ref().child(imagePath).putFile(image);
+         TaskSnapshot taskSnapshot = await uploadTask;
+
+
+         String imageUrl = await taskSnapshot.ref.getDownloadURL();
+
+
+         imageUrls.add(imageUrl);
+       }
+     } catch (e) {
+       print('Error uploading images: $e');
+     }
+
+     return imageUrls;
+   }
+
+
+
+   Widget customimageField(int index, VoidCallback onPressed){
+     TextEditingController _textEditingController = TextEditingController();
+
+     return Container(
+       width: 100,
+       height: 100,
+       decoration: BoxDecoration(
+         color: Colors.deepPurple[100],
+         borderRadius: BorderRadius.circular(8.0),
+
+       ),
+       child: Column(
+         mainAxisAlignment: MainAxisAlignment.center,
+         children: [
+           GestureDetector(
+             onTap: onPressed,
+             child: Container(
+               width: 100,
+               height: 100,
+               decoration: BoxDecoration(
+                 color: Colors.deepPurple[200],
+                 shape: BoxShape.circle,
+               ),
+               child: Center(
+                 child: _pickedImages[index] != null
+                     ? Image.file(
+                   File(_pickedImages[index]!.path),
+                   width: 100,
+                   height: 100,
+                   fit: BoxFit.fill,
+                 )
+                     : Icon(
+                   Icons.add,
+                   color: Colors.white,
+                 ),
+               ),
+             ),
+           ),
+         ],
+
+       ),
+     );
+   }
+
+
 }
 
