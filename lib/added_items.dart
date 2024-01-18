@@ -26,7 +26,7 @@ class _AddedItemsPageState extends State<AddedItemsPage> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('products')
-            .where('sellerId', isEqualTo: currentUser.uid)
+            .where('sellerId', isEqualTo: currentUser.email)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
