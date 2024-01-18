@@ -21,16 +21,21 @@ class _AddedItemsPageState extends State<AddedItemsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Added Items'),
+        title: Text(
+          'Added Items',
+          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),),
+        centerTitle: true,
+        backgroundColor: Colors.deepPurple,
+
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('products')
-            .where('sellerId', isEqualTo: currentUser.uid)
+            .where('sellerId', isEqualTo: currentUser.email)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
