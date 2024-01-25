@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 class ChatBubble extends StatelessWidget {
   final String message;
-  const ChatBubble({super.key,required this.message});
+
+  const ChatBubble({Key? key, required this.message}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,7 @@ class ChatBubble extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         color: Colors.deepPurple,
       ),
-      child: Text(message,style: TextStyle(fontSize: 15,color: Colors.white),),
+      child: Text(message, style: TextStyle(fontSize: 15, color: Colors.white)),
     );
   }
 }
