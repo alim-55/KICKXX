@@ -18,10 +18,10 @@ class _ColoumWidgetState extends State<ColoumWidget> {
           padding: EdgeInsets.all(16.0),
           color: Colors.black.withOpacity(0.5), // Add a semi-transparent black background
           child: Center(
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
+            // child: CircularProgressIndicator(
+            //   strokeWidth: 5,
+            //   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            // ),
           ),
         );
 

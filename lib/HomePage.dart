@@ -12,6 +12,7 @@ import 'package:badges/badges.dart' as badges;
 import 'package:badges/src/badge_animation.dart';
 import 'package:provider/provider.dart';
 import 'DatabaseHelper.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key});
@@ -21,6 +22,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool isRowItemsDataLoaded = false;
+  bool isColoumDataLoaded = false;
+
+  @override
+  void initState() {
+    Future.delayed(Duration(seconds: 3), () {
+      setState(() {
+        isRowItemsDataLoaded = true;
+        isColoumDataLoaded = true;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,9 +59,12 @@ class _HomePageState extends State<HomePage> {
                 builder: (context) => Inbox(),
               ),
             );
-
           },
-          icon: Icon(Icons.messenger_outline_rounded, color: Colors.white,size: 30,),
+          icon: Icon(
+            Icons.messenger_outline_rounded,
+            color: Colors.white,
+            size: 30,
+          ),
         ),
         actions: [
           Stack(
@@ -57,13 +75,14 @@ class _HomePageState extends State<HomePage> {
                 icon: Icon(Icons.shopping_bag),
                 color: Colors.white,
               ),
-              Consumer<cartProvider>(builder: (context, value, child) => badges.Badge(
-                badgeContent: Text(
-                  value.getCounter().toString(),
-                  style: TextStyle(color: Colors.white),
-                ),
-                position: badges.BadgePosition.topEnd(top: 0, end: 0),
-              ))
+              Consumer<cartProvider>(
+                  builder: (context, value, child) => badges.Badge(
+                        badgeContent: Text(
+                          value.getCounter().toString(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        position: badges.BadgePosition.topEnd(top: 0, end: 0),
+                      ))
             ],
           ),
         ],
@@ -88,7 +107,14 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(10),
         child: ListView(
           children: [
-            RowItemsWidget(),
+            if (!isRowItemsDataLoaded)
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: RowItemsWidget(),
+              ),
+            // Show RowItemsWidget when data is loaded
+            if (isRowItemsDataLoaded) RowItemsWidget(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Row(
@@ -131,9 +157,19 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(height: 10),
-            ChangeNotifierProvider.value(
+            // Add shimmer effect to ColoumWidget
+            if (!isColoumDataLoaded)
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: ColoumWidget(),
+              )
+
+            else
+              ChangeNotifierProvider.value(
                 value: Provider.of<cartProvider>(context),
-                child: ColoumWidget()),
+                child: ColoumWidget(),
+              ),
           ],
         ),
       ),

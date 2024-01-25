@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kickxx/seller_profile.dart';
+import 'package:kickxx/Notification_Service.dart';
 
 class ItemPage extends StatefulWidget {
   final DocumentSnapshot product;
@@ -12,6 +13,8 @@ class ItemPage extends StatefulWidget {
 }
 
 class _ItemPageState extends State<ItemPage> {
+  final LocalNotificationService _notificationService =
+      LocalNotificationService();
   int? selectedSize;
   List<String> availableSizes = [];
   int selectedImageIndex = 0;
@@ -291,7 +294,19 @@ class _ItemPageState extends State<ItemPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
-          // Add to cart logic
+          if (selectedSize == null)
+            {
+              // Show a notification indicating that the size is not selected
+              _notificationService.showNotification(
+                id: 2,
+                title: 'Size Not Selected',
+                body: 'Please select a size before adding to the cart.',
+              )
+            }
+          else
+            {
+
+            }
         },
         child: Container(
           child: Icon(
