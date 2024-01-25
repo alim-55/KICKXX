@@ -6,17 +6,16 @@ class Seller_Profile extends StatefulWidget {
   final DocumentSnapshot sellerData;
 
   const Seller_Profile({Key? key, required this.sellerData}) : super(key: key);
+
   @override
   State<Seller_Profile> createState() => _Seller_ProfileState();
 }
 
 class _Seller_ProfileState extends State<Seller_Profile> {
-
-
   @override
   Widget build(BuildContext context) {
-
     Map<String, dynamic>? sellerData = widget.sellerData?.data() as Map<String, dynamic>?;
+
     if (sellerData == null) {
       // Show loading or error state
       return Center(
@@ -62,7 +61,7 @@ class _Seller_ProfileState extends State<Seller_Profile> {
             SizedBox(height: 20),
             Center(
               child: Text(
-                sellerData['Email']  ,
+                sellerData['Email'],
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -79,14 +78,14 @@ class _Seller_ProfileState extends State<Seller_Profile> {
               ),
             ),
             TextBox(
-              text: sellerData['User name'] ,
+              text: sellerData['User name'],
               iconData: Icons.message_rounded,
               sectionName: 'Username',
               onPressed: () {},
             ),
             SizedBox(height: 10),
             TextBox(
-              text: sellerData['Phone'] ,
+              text: sellerData['Phone'],
               iconData: Icons.phone,
               sectionName: 'Phone',
               onPressed: () {},
@@ -99,7 +98,7 @@ class _Seller_ProfileState extends State<Seller_Profile> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChatPage(receiverUserId: sellerData['User name'], receiverUserEmail: sellerData['Email'])),
+            MaterialPageRoute(builder: (context) => ChatPage( receiverUserEmail: sellerData['Email'])),
           );
         },
         child: Icon(Icons.message),
@@ -107,6 +106,7 @@ class _Seller_ProfileState extends State<Seller_Profile> {
       ),
     );
   }
+
   ImageProvider<Object>? _selectedImage(String? imagePath) {
     if (imagePath != null && imagePath.isNotEmpty) {
       return NetworkImage(imagePath);

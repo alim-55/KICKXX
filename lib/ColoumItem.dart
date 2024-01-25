@@ -138,12 +138,14 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                 ),
                 Row(
                   children: [
-                    Text(
-                      'Price: \$${productData['productPrice'] ?? ''}',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.deepPurple,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Text(
+                        'Price: \$${productData['productPrice'] ?? ''}',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     Expanded(

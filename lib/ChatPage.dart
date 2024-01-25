@@ -5,12 +5,10 @@ import 'package:kickxx/chatBubbles.dart';
 import 'package:kickxx/chatService.dart';
 
 class ChatPage extends StatefulWidget {
-  final String receiverUserId;
   final String receiverUserEmail;
 
   const ChatPage({
     Key? key,
-    required this.receiverUserId,
     required this.receiverUserEmail,
   }) : super(key: key);
 
@@ -25,7 +23,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(widget.receiverUserId, _messageController.text);
+      await _chatService.sendMessage(widget.receiverUserEmail, _messageController.text);
       _messageController.clear();
     }
   }
@@ -35,7 +33,7 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.receiverUserEmail),
-        titleTextStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        titleTextStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.deepPurple),
         centerTitle: true,
       ),
       body: Column(
@@ -50,8 +48,9 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessageList() {
+    String currentUserEmail = _firebaseAuth.currentUser?.email ?? '';
     return StreamBuilder(
-      stream: _chatService.getMessage(widget.receiverUserId, _firebaseAuth.currentUser!.uid),
+      stream: _chatService.getMessage(currentUserEmail, widget.receiverUserEmail),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error ${snapshot.error}');
@@ -59,7 +58,9 @@ class _ChatPageState extends State<ChatPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text('Loading......');
         }
+
         return ListView(
+          reverse: true,
           children: snapshot.data!.docs.map((document) => _buildMessageItem(document)).toList(),
         );
       },
@@ -68,19 +69,50 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    var alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid)
-        ? Alignment.centerRight
-        : Alignment.centerLeft;
+    var alignment = (data['senderId'] == _firebaseAuth.currentUser?.uid)
+        ? CrossAxisAlignment.end
+        : CrossAxisAlignment.start;
     return Container(
-      alignment: alignment,
+      margin: EdgeInsets.symmetric(vertical: 8),
       child: Column(
-        crossAxisAlignment: (data['senderId']==_firebaseAuth.currentUser!.uid) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: alignment,
         children: [
-          Text(data['senderEmail']),
-          ChatBubble(message : data['message']),
+          Text(
+            data['senderEmail'],
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 4),
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: (data['senderId'] == _firebaseAuth.currentUser?.uid)
+                  ? Colors.deepPurple
+                  : Colors.deepPurple,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data['message'],
+                  style: TextStyle(fontSize: 15, color: Colors.white),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  _formatTimestamp(data['timestamp']),
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  String _formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    return '${dateTime.hour}:${dateTime.minute}';
   }
 
   Widget _buildMessageInput() {

@@ -49,6 +49,8 @@ class _AddProductState extends State<AddProduct> {
    final MultiSelectController _controller = MultiSelectController();
    final MultiSelectController _shoeSizeController = MultiSelectController();
 
+   bool isUploading = false;
+   List<ValueItem> selectedShoeCategory = [];
    /*final List<String> items = [
      'Nike Lifestyle',
      'Nike Jordan',
@@ -78,17 +80,17 @@ class _AddProductState extends State<AddProduct> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                reusableTextField("Enter Product name", Icons.pedal_bike, false, _productnameTextController,f1,f2,context,(){}),
+                reusableTextField("Enter Product name", null, false, _productnameTextController,f1,f2,context,(){}),
                 SizedBox(height: 10.0),
-                reusableTextField("Enter Brand name", Icons.pedal_bike, false, _brandNameTextController,f2,f3,context,(){}),
+                reusableTextField("Enter Brand name", null, false, _brandNameTextController,f2,f3,context,(){}),
                 SizedBox(height: 10.0),
-                reusableTextField("Enter Shoe Color", Icons.pedal_bike, false, _colorTextController,f3,f4,context,(){}),
+                reusableTextField("Enter Shoe Color", null, false, _colorTextController,f3,f4,context,(){}),
                 SizedBox(height: 10.0),
-                reusableTextField("Enter Product Description", Icons.pedal_bike, false, _productDescriptionTextController,f4,f5,context,(){}),
+                reusableTextField("Enter Product Description", null, false, _productDescriptionTextController,f4,f5,context,(){}),
                 SizedBox(height: 10.0),
-                reusableTextField("Enter Product Price", Icons.pedal_bike, false, _productPriceTextController,f5,f6,context,(){}),
+                reusableTextField("Enter Product Price", null, false, _productPriceTextController,f5,f6,context,(){}),
                 SizedBox(height: 10.0),
-                reusableTextField("Enter Product's Quantity", Icons.pedal_bike, false, _productquantityTextController,f6,f7,context,(){}),
+                reusableTextField("Enter Product's Quantity", null, false, _productquantityTextController,f6,f7,context,(){}),
                 SizedBox(height: 10.0),
 
 
@@ -163,12 +165,17 @@ class _AddProductState extends State<AddProduct> {
 
                 SizedBox(height: 40),
 
+
             Center(
 
               child: Container(
                 child: MultiSelectDropDown(
                   controller: _controller,
-                  onOptionSelected: (List<ValueItem> selectedOptions) {},
+                  onOptionSelected: (List<ValueItem> selectedOptions) {
+                    setState(() {
+                      selectedShoeCategory = selectedOptions;
+                    });
+                  },
                   options: const <ValueItem>[
                     ValueItem(label: 'Nike Lifestyle', value: '1'),
                     ValueItem(label: 'Nike Jordan',value: '2'),
@@ -262,7 +269,9 @@ class _AddProductState extends State<AddProduct> {
            _pickedImages[index] = pickedImage;
            productImages.add(File(pickedImage.path));
          });
+
        }
+
      }catch (e) {
        print('Error picking image: $e');
      }
@@ -271,10 +280,23 @@ class _AddProductState extends State<AddProduct> {
    Future<void> uploadProduct() async {
 
      try {
-       // if(_productPriceTextController.text.isEmpty||_sellernameTextController.text.isEmpty||_productquantityTextController.text.isEmpty||_productDescriptionTextController.text.isEmpty||_brandNameTextController.text.isEmpty||_colorTextController.text.isEmpty){
-       //   Fluttertoast.showToast(msg: 'Please fill in all fields', gravity: ToastGravity.TOP);
-       //   return;
-       // }
+       if(_productPriceTextController.text.isEmpty||selectedShoeCategory.isEmpty||  _productquantityTextController.text.isEmpty||_productDescriptionTextController.text.isEmpty||_brandNameTextController.text.isEmpty||_colorTextController.text.isEmpty){
+         Fluttertoast.showToast(msg: 'Please fill in all fields', gravity: ToastGravity.TOP);
+         return;
+       }
+       if (productImages.length != 3) {
+         // Display an error message if the condition is not met
+         Fluttertoast.showToast(
+           msg: 'Please select exactly three images', gravity: ToastGravity.TOP,
+         );
+         return;
+       }
+
+       setState(() {
+         isUploading = true;
+       });
+
+
        List<String> imageUrls = await uploadImagesToStorage(productImages);
 
 
@@ -296,7 +318,7 @@ class _AddProductState extends State<AddProduct> {
          'productQuantity': int.parse(_productquantityTextController.text),
          'shoeSizes': _shoeSizeController.selectedOptions.map((item) =>
          item.label).toList(),
-         'category': selectedValue ?? "",
+         'category': selectedValue ,
          // Ensure to handle null case appropriately
          'imageUrls': imageUrls,
          'sellerId': sellerID,
@@ -305,11 +327,29 @@ class _AddProductState extends State<AddProduct> {
 
        await productDoc.set(productInfo);
 
+       setState(() {
+         isUploading = false;
+       });
 
+       // Show success message
+       Fluttertoast.showToast(
+         msg: 'Product uploaded successfully',
+         gravity: ToastGravity.TOP,
+       );
 
        print('Image URLs: $imageUrls');
        print('Product uploaded successfully.');
      }catch (e) {
+       setState(() {
+         isUploading = false;
+       });
+
+       // Show error message
+       Fluttertoast.showToast(
+         msg: 'Error uploading product: $e',
+         gravity: ToastGravity.TOP,
+       );
+
        print('Error uploading product: $e');
      }
    }
