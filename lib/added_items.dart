@@ -85,7 +85,7 @@ class _AddedItemsPageState extends State<AddedItemsPage> {
                       SlidableAction(
                         padding: EdgeInsets.all(20.0),
                         borderRadius: BorderRadius.circular(15.0),
-                        flex: 20,
+                        //flex: 1,
                         autoClose: true ,
                         backgroundColor: Colors.red,
                           icon: Icons.delete,
