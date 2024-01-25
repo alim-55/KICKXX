@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:kickxx/CartProvider.dart';
+import 'package:kickxx/Inbox.dart';
 import 'package:kickxx/row_items.dart';
 import 'package:kickxx/ColoumItem.dart';
 import 'package:kickxx/NotificationPage.dart';
@@ -37,9 +38,15 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.deepPurple,
         leading: IconButton(
           onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Inbox(),
+              ),
+            );
 
           },
-          icon: Icon(Icons.menu, color: Colors.white),
+          icon: Icon(Icons.messenger_outline_rounded, color: Colors.white,size: 30,),
         ),
         actions: [
           Stack(

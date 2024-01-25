@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
-class NotificationP extends StatelessWidget {
-  Map<String, String?> payload = {};
-
+class Inbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    payload = ModalRoute.of(context)?.settings.arguments as Map<String, String?>;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Notification',
+          'Messages',
           style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
@@ -22,8 +18,15 @@ class NotificationP extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Text('This is a notification page! $payload', style: TextStyle(fontSize: 20)),
+      body: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepPurple, Colors.purple],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
       ),
     );
   }
