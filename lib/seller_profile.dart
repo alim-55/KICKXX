@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kickxx/ChatPage.dart';
 import 'text_box.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+
 class Seller_Profile extends StatefulWidget {
   final DocumentSnapshot sellerData;
 
@@ -12,12 +16,16 @@ class Seller_Profile extends StatefulWidget {
 }
 
 class _Seller_ProfileState extends State<Seller_Profile> {
+  late String sellerPhone;
+  late String sellerEmail;
+  late String? buyerEmail=FirebaseAuth.instance.currentUser?.email;
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic>? sellerData = widget.sellerData?.data() as Map<String, dynamic>?;
-
+    sellerEmail=sellerData?['Email'];
     if (sellerData == null) {
       // Show loading or error state
+
       return Center(
         child: CircularProgressIndicator(),
       );
@@ -83,12 +91,15 @@ class _Seller_ProfileState extends State<Seller_Profile> {
               sectionName: 'Username',
               onPressed: () {},
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 10),//sellerPhone=sellerData['Phone'],
             TextBox(
+
               text: sellerData['Phone'],
               iconData: Icons.phone,
               sectionName: 'Phone',
-              onPressed: () {},
+              onPressed: () {
+                _callNumber( sellerData['Phone']);
+              },
             ),
             SizedBox(height: 10),
           ],
@@ -105,8 +116,18 @@ class _Seller_ProfileState extends State<Seller_Profile> {
         backgroundColor: Colors.deepPurple,
       ),
     );
-  }
 
+  }
+  _callNumber(String? phoneNumber) async {
+    if (phoneNumber != null && phoneNumber.isNotEmpty&& buyerEmail!=sellerEmail) {
+      bool? res = await FlutterPhoneDirectCaller.callNumber(phoneNumber);
+    } else if(buyerEmail!=sellerEmail){
+      Fluttertoast.showToast(
+          msg: "you can't call yourself T_T",
+          gravity: ToastGravity.TOP);
+      // Handle the case where the phone number is not available
+    }
+  }
   ImageProvider<Object>? _selectedImage(String? imagePath) {
     if (imagePath != null && imagePath.isNotEmpty) {
       return NetworkImage(imagePath);
