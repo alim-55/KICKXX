@@ -6,11 +6,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kickxx/AccountPage.dart';
 import 'package:kickxx/reusable_widget.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'product_images.dart';
 import 'package:kickxx/Notification_Service.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 
 class AddProduct extends StatefulWidget {
    AddProduct({super.key});
@@ -73,9 +76,25 @@ class _AddProductState extends State<AddProduct> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: Text("Add Product"),
+        title: isUploading
+            ? Text("Product Uploading ...",
+        selectionColor: Colors.white,):Text("Add Product",selectionColor: Colors.white,),
       ),
-      body: SingleChildScrollView(
+      body: isUploading
+          ? Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepPurple, Colors.black, Colors.deepPurple, Colors.black, Colors.deepPurple],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+            child: Center(
+
+                    child: LoadingAnimationWidget.dotsTriangle(color: Colors.white, size: 100)
+                  ),
+          )
+          : SingleChildScrollView(
         child: Container(
           color: Colors.deepPurple,
           child: Padding(
@@ -288,13 +307,13 @@ class _AddProductState extends State<AddProduct> {
          Fluttertoast.showToast(msg: 'Please fill in all fields', gravity: ToastGravity.TOP);
          return;
        }
-       if (productImages.length != 3) {
-         // Display an error message if the condition is not met
-         Fluttertoast.showToast(
-           msg: 'Please select exactly three images', gravity: ToastGravity.TOP,
-         );
-         return;
-       }
+       // if (productImages.length != 3) {
+       //   // Display an error message if the condition is not met
+       //   Fluttertoast.showToast(
+       //     msg: 'Please select exactly three images', gravity: ToastGravity.TOP,
+       //   );
+       //   return;
+       // }
 
        setState(() {
          isUploading = true;
@@ -336,10 +355,10 @@ class _AddProductState extends State<AddProduct> {
        });
 
        // Show success message
-       Fluttertoast.showToast(
-         msg: 'Product uploaded successfully',
-         gravity: ToastGravity.TOP,
-       );
+       // Fluttertoast.showToast(
+       //   msg: 'Product uploaded successfully',
+       //   gravity: ToastGravity.TOP,
+       // );
 
        print('Image URLs: $imageUrls');
        print('Product uploaded successfully.');
@@ -347,7 +366,14 @@ class _AddProductState extends State<AddProduct> {
          id: 3,
          title: 'Update',
          body: 'Product added successfully.',
+
+       );Navigator.push(
+         context,
+         MaterialPageRoute(
+           builder: (context) => AccountPage(),
+         ),
        );
+
 
      }catch (e) {
        setState(() {

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kickxx/seller_profile.dart';
 import 'package:kickxx/Notification_Service.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import 'BrandProductsPage.dart';
 
 class ItemPage extends StatefulWidget {
   final DocumentSnapshot product;
@@ -13,6 +16,9 @@ class ItemPage extends StatefulWidget {
 }
 
 class _ItemPageState extends State<ItemPage> {
+  late String sellerName="";
+
+  String BrandName="";
   final LocalNotificationService _notificationService =
       LocalNotificationService();
   int? selectedSize;
@@ -38,6 +44,8 @@ class _ItemPageState extends State<ItemPage> {
 
     List<String> imageUrls = List<String>.from(productData['imageUrls'] ?? []);
     List<String> sizes = List<String>.from(productData['sizes'] ?? []);
+
+    BrandName = productData['brandName'].toLowerCase();
 
     return Scaffold(
       appBar: AppBar(
@@ -125,15 +133,105 @@ class _ItemPageState extends State<ItemPage> {
                 child: Column(
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                     // crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Expanded(
-                          child: Text(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [Text(
                             productData['productName'] ?? '',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+
+                            Row(
+                              children: [
+                                Text(
+
+                                "Brand: ",//productData['brandName'],
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.indigo
+                                ),
+                              ),
+                           SizedBox(width: 6),
+                                Visibility(
+                                  visible: BrandName == 'nike',
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BrandProductsPage(
+                                            brandName: BrandName,
+                                          ),
+                                        ),
+                                      );
+                                      // Handle the onTap event if needed
+                                    },
+                                    child: Image.asset(
+                                      'assets/nike.png',
+                                      height: 40,
+                                      width: 40,
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: BrandName == 'adidas',
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BrandProductsPage(
+                                            brandName: BrandName,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      'assets/adidas.png',
+                                      height: 40,
+                                      width: 40,
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: BrandName == 'newbalance',
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BrandProductsPage(
+                                            brandName: BrandName,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      'assets/newbalance.png',
+                                      height: 40,
+                                      width: 40,
+                                    ),
+                                  ),
+                                ),
+
+                            // if(BrandName=='nike')
+                            //   Image.asset('assets/nike.png',
+                            //   height: 40,width: 40),
+                            // if(BrandName=='adidas')
+                            //   Image.asset('assets/adidas.png',
+                            //       height: 40,width: 40),
+                            // if(BrandName=='newbalance')
+                            //   Image.asset('assets/newbalance.png',
+                            //       height: 40,width: 40),
+
+    ],),
+                          ]
                         ),
                         SizedBox(
                           width: 10,
@@ -157,36 +255,25 @@ class _ItemPageState extends State<ItemPage> {
                     SizedBox(
                       height: 20,
                     ),
+                    // Container(
+                    //   padding: EdgeInsets.all(7),
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.deepPurple,
+                    //     borderRadius: BorderRadius.circular(7),
+                    //   ),
+                    //   // child: Text(
+                    //   //   'Quality : ${productData['productQuality'] ?? ''}',
+                    //   //   style: TextStyle(
+                    //   //     color: Colors.white,
+                    //   //   ),
+                    //   // ),
+                    // ),
+                    // SizedBox(
+                    //   height: 5,
+                    // ),
                     Container(
-                      padding: EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        color: Colors.deepPurple,
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                      child: Text(
-                        'Quality : ${productData['productQuality'] ?? ''}',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Text(
-                            'Selling by : ${productData['sellerName'] ?? ''}',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.deepPurple,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 180,
-                          ),
-                          StreamBuilder<DocumentSnapshot>(
+
+                          child: StreamBuilder<DocumentSnapshot>(
                             stream: FirebaseFirestore.instance
                                 .collection(
                                     'users') // Change to your users collection
@@ -204,8 +291,20 @@ class _ItemPageState extends State<ItemPage> {
                               }
 
                               var sellerData = snapshot.data!;
+                              sellerName=sellerData['User name'];
                               print('Seller data: ${sellerData.data()}');
-                              return IconButton(
+
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Selling by : '+ sellerName,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.deepPurple,
+                                    ),
+                                  ),
+                                  IconButton(
                                 onPressed: () {
                                   Navigator.push(
                                     context,
@@ -218,12 +317,14 @@ class _ItemPageState extends State<ItemPage> {
                                 icon: Icon(
                                   Icons.account_circle_outlined,
                                   color: Colors.deepPurple,
-                                ),
+                                ),),
+                              ],
                               );
                             },
                           ),
-                        ],
-                      ),
+
+                       // ],
+                     // ),
                     ),
                     SizedBox(
                       height: 1,
