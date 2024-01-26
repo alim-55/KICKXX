@@ -62,17 +62,17 @@ class _ColoumWidgetState extends State<ColoumWidget> {
         Navigator.push(
           context,
           PageRouteBuilder(
-            // Set your desired animation duration here
-            transitionDuration: Duration(milliseconds: 1000), // For example, 1000 milliseconds
+            //animation duration here
+            transitionDuration: Duration(milliseconds: 1000),
 
             pageBuilder: (context, animation, secondaryAnimation) {
               return FadeTransition(
-                // Use a Tween with your desired duration for the opacity animation
+
                 opacity: Tween<double>(begin: 0.0, end: 1.0)
                     .animate(
                   CurvedAnimation(
                     parent: animation,
-                    curve: Curves.fastOutSlowIn, // Optional: Use a custom curve for the animation
+                    curve: Curves.fastOutSlowIn,
                   ),
                 ),
                 child: ItemPage(product: product),
@@ -80,12 +80,12 @@ class _ColoumWidgetState extends State<ColoumWidget> {
             },
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return FadeTransition(
-                // Use the same Tween and duration for consistency
+
                 opacity: Tween<double>(begin: 0.0, end: 1.0)
                     .animate(
                   CurvedAnimation(
                     parent: animation,
-                    curve: Curves.fastOutSlowIn, // Optional: Use a custom curve for the animation
+                    curve: Curves.fastOutSlowIn,
                   ),
                 ),
                 child: child,
