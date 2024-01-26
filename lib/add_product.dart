@@ -10,6 +10,8 @@ import 'package:kickxx/reusable_widget.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'product_images.dart';
+import 'package:kickxx/Notification_Service.dart';
+
 class AddProduct extends StatefulWidget {
    AddProduct({super.key});
 
@@ -18,6 +20,8 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  final LocalNotificationService _notificationService = LocalNotificationService();
+
    TextEditingController _productnameTextController= TextEditingController();
 
    TextEditingController _productPriceTextController= TextEditingController();
@@ -339,6 +343,12 @@ class _AddProductState extends State<AddProduct> {
 
        print('Image URLs: $imageUrls');
        print('Product uploaded successfully.');
+       _notificationService.showNotification(
+         id: 3,
+         title: 'Update',
+         body: 'Product added successfully.',
+       );
+
      }catch (e) {
        setState(() {
          isUploading = false;
