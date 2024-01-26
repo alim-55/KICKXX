@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:kickxx/itemPage.dart';
 
@@ -14,17 +13,6 @@ class _ColoumWidgetState extends State<ColoumWidget> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('products').snapshots(),
       builder: (context, snapshot) {
-        Container(
-          padding: EdgeInsets.all(16.0),
-          color: Colors.black.withOpacity(0.5), // Add a semi-transparent black background
-          child: Center(
-            // child: CircularProgressIndicator(
-            //   strokeWidth: 5,
-            //   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            // ),
-          ),
-        );
-
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
@@ -39,7 +27,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
           childAspectRatio: .68,
           shrinkWrap: true,
           crossAxisCount: 2,
-          crossAxisSpacing :15.0,
+          crossAxisSpacing: 15.0,
           mainAxisSpacing: 15.0,
           padding: EdgeInsets.all(6.0),
           physics: NeverScrollableScrollPhysics(),
@@ -69,104 +57,157 @@ class _ColoumWidgetState extends State<ColoumWidget> {
       imageUrls.add(rawImageUrls.toString());
     }
 
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: Colors.deepPurple,
-                  borderRadius: BorderRadius.circular(20),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            //animation duration here
+            transitionDuration: Duration(milliseconds: 1000),
+
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return FadeTransition(
+
+                opacity: Tween<double>(begin: 0.0, end: 1.0)
+                    .animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.fastOutSlowIn,
+                  ),
                 ),
-                child: Text(
-                  "HOT",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                child: ItemPage(product: product),
+              );
+            },
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+
+                opacity: Tween<double>(begin: 0.0, end: 1.0)
+                    .animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.fastOutSlowIn,
+                  ),
+                ),
+                child: child,
+              );
+            },
+          ),
+        );
+      },
+      child: Hero(
+        tag: 'product_${product.id}', // Use a unique tag for each product
+        child: Container(
+          padding: EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.deepPurple.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 2,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      "HOT",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => {},
+                    icon: Icon(
+                      Icons.favorite_border_sharp,
+                      color: Colors.deepPurple,
+                    ),
+                  ),
+                ],
+              ),
+
+              Container(
+                margin: EdgeInsets.all(10),
+                height: 95,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.network(
+                    imageUrls.isNotEmpty ? imageUrls.first : '',
+                    width: 150,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              IconButton(
-                onPressed: () => {},
-                icon: Icon(
-                  Icons.favorite_border_sharp,
-                  color: Colors.deepPurple,
+
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      productData['productName'] ?? '',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Price: \$${productData['productPrice'] ?? ''}',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: IconButton(
+                            onPressed: () => {},
+                            icon: Icon(
+                              Icons.shopping_cart_sharp,
+                              color: Colors.deepPurple,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ItemPage(product: product),
-                ),
-              );
-            },
-            child: Container(
-              margin: EdgeInsets.all(10),
-              child: Image.network(
-                imageUrls.isNotEmpty ? imageUrls.first : '',
-                width: 150,
-                height: 100,
-              ),
-            ),
-          ),
-          SizedBox(height: 10),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  productData['productName'] ?? '',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.deepPurple,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Price: \$${productData['productPrice'] ?? ''}',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: IconButton(
-                        onPressed: () => {},
-                        icon: Icon(
-                          Icons.shopping_cart_sharp,
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
-
-
 
 }
