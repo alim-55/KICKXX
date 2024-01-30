@@ -131,6 +131,7 @@ class _ItemPageState extends State<ItemPage> {
                   ),
                 ),
                 child: Column(
+                 // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -219,16 +220,47 @@ class _ItemPageState extends State<ItemPage> {
                                     ),
                                   ),
                                 ),
+                                Visibility(
+                                  visible: BrandName == 'puma',
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BrandProductsPage(
+                                            brandName: BrandName,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      'assets/puma.png',
+                                      height: 40,
+                                      width: 40,
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: BrandName == 'vans',
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BrandProductsPage(
+                                            brandName: BrandName,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      'assets/Vans-Logo.png',
+                                      height: 40,
+                                      width: 40,
+                                    ),
+                                  ),
+                                ),
 
-                            // if(BrandName=='nike')
-                            //   Image.asset('assets/nike.png',
-                            //   height: 40,width: 40),
-                            // if(BrandName=='adidas')
-                            //   Image.asset('assets/adidas.png',
-                            //       height: 40,width: 40),
-                            // if(BrandName=='newbalance')
-                            //   Image.asset('assets/newbalance.png',
-                            //       height: 40,width: 40),
 
     ],),
                           ]
@@ -237,14 +269,18 @@ class _ItemPageState extends State<ItemPage> {
                           width: 10,
                         ),
                         Container(
+                          width: 70,
+                          height: 40,
                           padding: EdgeInsets.all(7),
                           decoration: BoxDecoration(
-                            color: Colors.deepPurple,
+
+                            color: Colors.indigo,
                             borderRadius: BorderRadius.circular(7),
                           ),
                           child: Text(
                             '\$ ${productData['productPrice'] ?? ''}',
                             style: TextStyle(
+                              fontSize: 15,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -298,7 +334,7 @@ class _ItemPageState extends State<ItemPage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Selling by : '+ sellerName,
+                                    'Seller : '+ sellerName,
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: Colors.deepPurple,
@@ -331,6 +367,8 @@ class _ItemPageState extends State<ItemPage> {
                     ),
                     Container(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
                             'Description :',
