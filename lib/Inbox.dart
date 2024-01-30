@@ -1,92 +1,116 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:kickxx/chatPage.dart'; // Import your ChatPage
+import 'package:flutter/material.dart';
+import 'package:kickxx/ChatPage.dart';
 
-class Inbox extends StatefulWidget {
-  @override
-  _InboxState createState() => _InboxState();
-}
-
-class _InboxState extends State<Inbox> {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+class Inbox extends StatelessWidget {
+  const Inbox({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Messages',
-          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        actions: [
-          IconButton(
-            onPressed: () => {},
-            icon: Icon(Icons.menu, color: Colors.white),
-          ),
-        ],
+        title: Text("Inbox",style: TextStyle(color: Colors.white),),
+        centerTitle: true,
       ),
-      body: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.deepPurple, Colors.purple],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: _buildChatUserList(),
-      ),
+      body: inboxCollection(),
     );
   }
+}
 
-  Widget _buildChatUserList() {
-    String currentUserEmail = _firebaseAuth.currentUser?.email ?? '';
+class inboxCollection extends StatelessWidget {
+  const inboxCollection({super.key});
 
-    return StreamBuilder(
-      stream: _firestore.collection('users').snapshots(),
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.email)
+          .collection('inbox')
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Text('Error ${snapshot.error}');
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('Loading......');
+        List<String> items = snapshot.data!.docs.map((doc) => doc.id).toList();
+        if (items.isEmpty) {
+          return const Center(
+            child: Text('No items found in the collection.'),
+          );
+        } else {
+          return ListView(
+            children: [
+              for (String receiver in items) InboxCard(receiverEmail: receiver),
+            ],
+          );
         }
-
-        List<DocumentSnapshot> users = snapshot.data!.docs;
-
-        return ListView.builder(
-          itemCount: users.length,
-          itemBuilder: (context, index) {
-            var userData = users[index].data() as Map<String, dynamic>?;
-
-            // Check if userData is not null
-            if (userData != null) {
-              String userEmail = userData['email'] ?? '';
-
-              if (userEmail != currentUserEmail) {
-                return ListTile(
-                  title: Text(userEmail),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChatPage(receiverUserEmail: userEmail),
-                      ),
-                    );
-                  },
-                );
-              }
-            }
-
-            return SizedBox.shrink(); // Exclude the current user from the list
-          },
-        );
       },
     );
   }
+}
 
+class InboxCard extends StatelessWidget {
+  String receiverEmail;
+  InboxCard({super.key, required this.receiverEmail});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection("users")
+              .doc(receiverEmail)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data!.data() != null) {
+              final userData = snapshot.data!.data() as Map<String, dynamic>;
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatPage(
+                        receiverUserEmail: receiverEmail,
+                      ),
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.white,
+                        backgroundImage: _selectedImage(userData['profilePicture']),
+                      ),
+                    ),
+                    SizedBox(width: 10,),
+                    Text(userData['Email']),
+                  ],
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text("Error${snapshot.error}"),
+              );
+            } else
+              return const Center(child: CircularProgressIndicator());
+          }),
+    );
+  }
+}
+ImageProvider<Object>? _selectedImage(String? imagePath) {
+  if (imagePath != null && imagePath.isNotEmpty) {
+    return NetworkImage(imagePath);
+  } else {
+    return AssetImage("assets/prof_bg3.png");
+  }
 }

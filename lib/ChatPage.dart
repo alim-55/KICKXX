@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kickxx/chatBubbles.dart';
 import 'package:kickxx/chatService.dart';
+import 'package:flutter/src/widgets/icon_data.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverUserEmail;
@@ -23,7 +25,8 @@ class _ChatPageState extends State<ChatPage> {
 
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(widget.receiverUserEmail, _messageController.text);
+      await _chatService.sendMessage(
+          widget.receiverUserEmail, _messageController.text);
       _messageController.clear();
     }
   }
@@ -32,9 +35,16 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
         title: Text(widget.receiverUserEmail),
-        titleTextStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+        titleTextStyle: TextStyle(
+            fontSize: 15,
+            //fontWeight: FontWeight.bold,
+            color: Colors.white),
         centerTitle: true,
+        actions: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.account_circle_rounded),color: Colors.white,),
+        ],
       ),
       body: Column(
         children: [
@@ -50,7 +60,8 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildMessageList() {
     String currentUserEmail = _firebaseAuth.currentUser?.email ?? '';
     return StreamBuilder(
-      stream: _chatService.getMessage(currentUserEmail, widget.receiverUserEmail),
+      stream:
+          _chatService.getMessage(currentUserEmail, widget.receiverUserEmail),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error ${snapshot.error}');
@@ -61,7 +72,9 @@ class _ChatPageState extends State<ChatPage> {
 
         return ListView(
           reverse: true,
-          children: snapshot.data!.docs.map((document) => _buildMessageItem(document)).toList(),
+          children: snapshot.data!.docs
+              .map((document) => _buildMessageItem(document))
+              .toList(),
         );
       },
     );
@@ -100,7 +113,7 @@ class _ChatPageState extends State<ChatPage> {
                 SizedBox(height: 4),
                 Text(
                   _formatTimestamp(data['timestamp']),
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(fontSize: 12, color: Colors.white),
                 ),
               ],
             ),
@@ -116,21 +129,43 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessageInput() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _messageController,
-            decoration: InputDecoration(
-              hintText: 'Type a message...',
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _messageController,
+              decoration: InputDecoration(
+                hintText: 'Type a message...',suffixStyle: TextStyle(color: Colors.deepPurple,fontWeight: FontWeight.bold),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(22.0),
+                ),
+                contentPadding: EdgeInsets.all(15),
+              ),
             ),
           ),
-        ),
-        IconButton(
-          onPressed: sendMessage,
-          icon: Icon(Icons.send, size: 40),
-        )
-      ],
+          IconButton(
+            onPressed: () {
+              sendMessage();
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(FirebaseAuth.instance.currentUser?.email)
+                  .collection("inbox")
+                  .doc(widget.receiverUserEmail)
+                  .set({});
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(widget.receiverUserEmail)
+                  .collection("inbox")
+                  .doc(FirebaseAuth.instance.currentUser?.email)
+                  .set({});
+            },
+            icon: Icon(Icons.send, size: 40, color: Colors.deepPurple),
+          )
+        ],
+      ),
     );
   }
+
 }
