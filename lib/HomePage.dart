@@ -11,8 +11,11 @@ import 'package:kickxx/BottomNavigation.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:badges/src/badge_animation.dart';
 import 'package:provider/provider.dart';
+import 'BrandProductsPage.dart';
 import 'DatabaseHelper.dart';
 import 'package:shimmer/shimmer.dart';
+
+import 'SearchResultPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key});
@@ -24,7 +27,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool isRowItemsDataLoaded = false;
   bool isColoumDataLoaded = false;
-
+  TextEditingController _searchController = TextEditingController();
   @override
   void initState() {
     Future.delayed(Duration(seconds: 3), () {
@@ -121,6 +124,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Expanded(
                     child: TextField(
+                      controller: _searchController,
                       cursorColor: Colors.deepPurple,
                       style: TextStyle(color: Colors.deepPurple),
                       //textAlign: TextAlign.center,
@@ -148,6 +152,26 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: IconButton(
                       onPressed: () {
+                        if(_searchController.text=="nike"||_searchController.text=="adidas"||_searchController.text=="newbalance"){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BrandProductsPage(
+                                brandName: _searchController.text,
+                              ),
+                            ),
+                          );
+                        }else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  SearchResultPage(
+                                      productName: _searchController.text
+                                          .toLowerCase()),
+                            ),
+                          );
+                        }
                         // Perform search action
                       },
                       icon: Icon(Icons.search, color: Colors.deepPurple),

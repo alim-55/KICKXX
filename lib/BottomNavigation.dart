@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:kickxx/NotificationPage.dart';
 import 'package:kickxx/AccountPage.dart';
-import 'package:kickxx/FavoritePage.dart';
+//import 'package:kickxx/FavoritePage.dart';
 import 'package:kickxx/HomePage.dart';
+import 'package:kickxx/add_product.dart';
 
 class BottomNavigation extends StatefulWidget {
   @override
@@ -15,7 +16,8 @@ class _NavigateState extends State<BottomNavigation> {
 
   final screens = [
     HomePage(),
-    FavoritePage(),
+    AddProduct(),
+    //FavoritePage(),
     NotificationPage(payload: 'nothing',),
     AccountPage(),
   ];
@@ -34,7 +36,7 @@ class _NavigateState extends State<BottomNavigation> {
       },
       items: [
         _buildNavItem(Icons.home, 'Home'),
-        _buildNavItem(Icons.favorite, 'Favourite'),
+        _buildNavItem(Icons.add_circle_rounded, 'Add'),
         _buildNavItem(Icons.notifications, 'Notification'),
         _buildNavItem(Icons.account_circle, 'Account'),
       ],

@@ -31,13 +31,14 @@ class _AddProductState extends State<AddProduct> {
 
    TextEditingController _sellernameTextController= TextEditingController();
 
-   TextEditingController _productquantityTextController= TextEditingController();
+   //TextEditingController _productquantityTextController= TextEditingController();
 
    TextEditingController _productDescriptionTextController= TextEditingController();
 
    TextEditingController _brandNameTextController= TextEditingController();
 
    TextEditingController _colorTextController= TextEditingController();
+  //final_productquantityTextController=1;
 
    FocusNode f1 =FocusNode();
 
@@ -58,6 +59,14 @@ class _AddProductState extends State<AddProduct> {
 
    bool isUploading = false;
    List<ValueItem> selectedShoeCategory = [];
+
+  final List<String> genderItems = [
+    'nike',
+    'adidas',
+    'newbalance'
+  ];
+
+
    /*final List<String> items = [
      'Nike Lifestyle',
      'Nike Jordan',
@@ -79,6 +88,7 @@ class _AddProductState extends State<AddProduct> {
         title: isUploading
             ? Text("Product Uploading ...",
         selectionColor: Colors.white,):Text("Add Product",selectionColor: Colors.white,),
+        centerTitle: true,
       ),
       body: isUploading
           ? Container(
@@ -96,25 +106,66 @@ class _AddProductState extends State<AddProduct> {
           )
           : SingleChildScrollView(
         child: Container(
-          color: Colors.deepPurple,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.deepPurple, Colors.black, Colors.deepPurple, Colors.black, Colors.deepPurple],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
           child: Padding(
             padding: EdgeInsets.all(16.0),
 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                    padding: EdgeInsets.only(left: 11),
+                    child: const Text('Product Name',style: TextStyle(fontSize: 20,color: Colors.white70),
+                      textAlign: TextAlign.start,)),
+                const SizedBox(
+                  height: 4,
+                ),
                 reusableTextField("Enter Product name", null, false, _productnameTextController,f1,f2,context,(){}),
                 SizedBox(height: 10.0),
+                Container(
+                    padding: EdgeInsets.only(left: 11),
+                    child: const Text('Brand ',style: TextStyle(fontSize: 20,color: Colors.white70),
+                      textAlign: TextAlign.start,)),
+                const SizedBox(
+                  height: 4,
+                ),
                 reusableTextField("Enter Brand name", null, false, _brandNameTextController,f2,f3,context,(){}),
                 SizedBox(height: 10.0),
+                Container(
+                    padding: EdgeInsets.only(left: 11),
+                    child: const Text(' Color',style: TextStyle(fontSize: 20,color: Colors.white70),
+                      textAlign: TextAlign.start,)),
+                const SizedBox(
+                  height: 4,
+                ),
                 reusableTextField("Enter Shoe Color", null, false, _colorTextController,f3,f4,context,(){}),
                 SizedBox(height: 10.0),
+                Container(
+                    padding: EdgeInsets.only(left: 11),
+                    child: const Text(' Description',style: TextStyle(fontSize: 20,color: Colors.white70),
+                      textAlign: TextAlign.start,)),
+                const SizedBox(
+                  height: 4,
+                ),
                 reusableTextField("Enter Product Description", null, false, _productDescriptionTextController,f4,f5,context,(){}),
                 SizedBox(height: 10.0),
+                Container(
+                    padding: EdgeInsets.only(left: 11),
+                    child: const Text(' Price',style: TextStyle(fontSize: 20,color: Colors.white70),
+                      textAlign: TextAlign.start,)),
+                const SizedBox(
+                  height: 4,
+                ),
                 reusableTextField("Enter Product Price", null, false, _productPriceTextController,f5,f6,context,(){}),
                 SizedBox(height: 10.0),
-                reusableTextField("Enter Product's Quantity", null, false, _productquantityTextController,f6,f7,context,(){}),
-                SizedBox(height: 10.0),
+                // reusableTextField("Enter Product's Quantity", null, false, _productquantityTextController,f6,f7,context,(){}),
+                // SizedBox(height: 10.0),
 
 
                 Container(
@@ -136,17 +187,18 @@ class _AddProductState extends State<AddProduct> {
                     ValueItem(label: '15', value: '6'),
                   ],
                   hint: "Select your Shoe size",
-                  hintColor: Colors.white,
+                  hintColor: Colors.black,
                   hintFontSize: 14.0,
                   borderColor: Colors.transparent,
                   selectedOptionBackgroundColor:Colors.white70,
                   optionsBackgroundColor:Colors.deepPurple[100],
 
-                  selectionType: SelectionType.multi,
+
+                  selectionType: SelectionType.single,
                   chipConfig: const ChipConfig(wrapType: WrapType.wrap),
                   dropdownHeight: 300,
                   borderRadius: 20.0,
-                  fieldBackgroundColor:Colors.white.withOpacity(0.3),
+                  fieldBackgroundColor:Colors.white70.withOpacity(0.8),
                   optionTextStyle: const TextStyle(fontSize: 16),
                   selectedOptionIcon: const Icon(Icons.check_circle),
                 ),
@@ -192,7 +244,68 @@ class _AddProductState extends State<AddProduct> {
             Center(
 
               child: Container(
-                child: MultiSelectDropDown(
+
+                /*child: DropdownButtonFormField2<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    // Add Horizontal padding using menuItemStyleData.padding so it matches
+                    // the menu padding when button's width is not specified.
+                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    // Add more decoration..
+                  ),
+                  hint: const Text(
+                    'Select Your Gender',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  items: genderItems
+                      .map((item) => DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ))
+                      .toList(),
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select gender.';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    //Do something when selected item is changed.
+                  },
+                  onSaved: (value) {
+                    selectedValue = value.toString();
+                  },
+                  buttonStyleData: const ButtonStyleData(
+                    padding: EdgeInsets.only(right: 8),
+                  ),
+                  iconStyleData: const IconStyleData(
+                    icon: Icon(
+                      Icons.arrow_drop_down,
+                      color: Colors.black45,
+                    ),
+                    iconSize: 24,
+                  ),
+                  dropdownStyleData: DropdownStyleData(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  menuItemStyleData: const MenuItemStyleData(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                ),*/
+
+
+
+                /*child: MultiSelectDropDown(
                   controller: _controller,
                   onOptionSelected: (List<ValueItem> selectedOptions) {
                     setState(() {
@@ -217,7 +330,7 @@ class _AddProductState extends State<AddProduct> {
                   borderColor: Colors.transparent,
                   selectedOptionBackgroundColor:Colors.white70,
                   optionsBackgroundColor:Colors.deepPurple[100],
-
+searchBackgroundColor: Colors.redAccent,
                   //selectedOptionTextColor: Colors.white,
 
                   selectionType: SelectionType.single,
@@ -227,7 +340,7 @@ class _AddProductState extends State<AddProduct> {
                   fieldBackgroundColor:Colors.white.withOpacity(0.3),
                   optionTextStyle: const TextStyle(fontSize: 16),
                   selectedOptionIcon: const Icon(Icons.check_circle),
-                ),
+                ),*/
               ),
             ),
                 SizedBox(height: 30),
@@ -303,17 +416,26 @@ class _AddProductState extends State<AddProduct> {
    Future<void> uploadProduct() async {
 
      try {
-       if(_productPriceTextController.text.isEmpty||selectedShoeCategory.isEmpty||  _productquantityTextController.text.isEmpty||_productDescriptionTextController.text.isEmpty||_brandNameTextController.text.isEmpty||_colorTextController.text.isEmpty){
+       if(_productPriceTextController.text.isEmpty|| _productDescriptionTextController.text.isEmpty||_brandNameTextController.text.isEmpty||_colorTextController.text.isEmpty){
          Fluttertoast.showToast(msg: 'Please fill in all fields', gravity: ToastGravity.TOP);
          return;
        }
-       // if (productImages.length != 3) {
-       //   // Display an error message if the condition is not met
-       //   Fluttertoast.showToast(
-       //     msg: 'Please select exactly three images', gravity: ToastGravity.TOP,
-       //   );
-       //   return;
-       // }
+       String price = _productPriceTextController.text;
+       if (price.isEmpty || double.tryParse(price) == null) {
+         Fluttertoast.showToast(
+           msg: 'Please enter a valid number for the product price',
+           gravity: ToastGravity.TOP,
+         );
+         return;
+       }
+       if (productImages.length != 3) {
+         // Display an error message if the condition is not met
+         Fluttertoast.showToast(
+           msg: 'Please select exactly three images', gravity: ToastGravity.TOP,
+         );
+         return;
+       }
+
 
        setState(() {
          isUploading = true;
@@ -333,12 +455,12 @@ class _AddProductState extends State<AddProduct> {
            .doc();
 
        final productInfo = {
-         'productName': _productnameTextController.text,
-         'brandName': _brandNameTextController.text,
-         'color': _colorTextController.text,
+         'productName': _productnameTextController.text.toLowerCase(),
+         'brandName': _brandNameTextController.text.toLowerCase(),
+         'color': _colorTextController.text.toLowerCase(),
          'productDescription': _productDescriptionTextController.text,
          'productPrice': double.parse(_productPriceTextController.text),
-         'productQuantity': int.parse(_productquantityTextController.text),
+        // 'productQuantity': int.parse(_productquantityTextController.text),
          'shoeSizes': _shoeSizeController.selectedOptions.map((item) =>
          item.label).toList(),
          'category': selectedValue ,
