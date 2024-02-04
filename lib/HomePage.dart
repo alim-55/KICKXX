@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
             );
           },
           icon: Icon(
-            Icons.messenger_outline_rounded,
+            Icons.mail,
             color: Colors.white,
             size: 30,
           ),
