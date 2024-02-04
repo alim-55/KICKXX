@@ -84,7 +84,7 @@ class _BrandProductsPageState extends State<BrandProductsPage> {
           context,
           PageRouteBuilder(
             // animation duration here
-            transitionDuration: Duration(milliseconds: 1000),
+            transitionDuration: Duration(milliseconds: 500),
             pageBuilder: (context, animation, secondaryAnimation) {
               return FadeTransition(
                 opacity: Tween<double>(begin: 0.0, end: 1.0).animate(

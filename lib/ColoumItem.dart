@@ -63,7 +63,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
           context,
           PageRouteBuilder(
             //animation duration here
-            transitionDuration: Duration(milliseconds: 1000),
+            transitionDuration: Duration(milliseconds: 500),
 
             pageBuilder: (context, animation, secondaryAnimation) {
               return FadeTransition(
