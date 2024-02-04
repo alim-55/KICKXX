@@ -93,7 +93,7 @@ class InboxCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 10,),
-                    Text(userData['Email']),
+                    Text(userData['User name']),
                   ],
                 ),
               );

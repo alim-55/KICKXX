@@ -91,7 +91,7 @@ class _Seller_ProfileState extends State<Seller_Profile> {
               sectionName: 'Username',
               onPressed: () {},
             ),
-            SizedBox(height: 10),//sellerPhone=sellerData['Phone'],
+            SizedBox(height: 10),
             TextBox(
 
               text: sellerData['Phone'],

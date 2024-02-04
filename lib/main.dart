@@ -40,7 +40,8 @@ class _MyAppState extends State<MyApp> {
           islogin = true;
         });
       }
-    });
+    }
+    );
   }
 
   void initState() {

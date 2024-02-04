@@ -1,9 +1,10 @@
+//import 'dart:js_interop';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kickxx/seller_profile.dart';
 import 'package:kickxx/Notification_Service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
 import 'BrandProductsPage.dart';
 
 class ItemPage extends StatefulWidget {
@@ -35,15 +36,36 @@ class _ItemPageState extends State<ItemPage> {
       availableSizes.add(rawAvailableSizes.toString());
     }
   }
+  Future<void> addToCart() async {
+    try {
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+      var currentUser = _auth.currentUser;
+      print("Current User: $currentUser");
+
+      CollectionReference _collectionRef = FirebaseFirestore.instance.collection("Cart");
+
+      await _collectionRef.doc(currentUser!.email).collection("items").doc().set(
+        {
+          "productName": widget.product["productName"],
+          "productPrice": widget.product["productPrice"],
+          "sellerId": widget.product["sellerId"],
+          "imageUrls":widget.product["imageUrls"][0],
+        },
+      );
+      print("Product added to cart successfully");
+    } catch (e) {
+      print("Error adding product to cart: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Extract product data from the DocumentSnapshot
+
     Map<String, dynamic> productData =
         widget.product.data() as Map<String, dynamic>;
 
-    List<String> imageUrls = List<String>.from(productData['imageUrls'] ?? []);
-    List<String> sizes = List<String>.from(productData['sizes'] ?? []);
+        List<String> imageUrls = List<String>.from(productData['imageUrls'] ?? []);
+        List<String> sizes = List<String>.from(productData['sizes'] ?? []);
 
     BrandName = productData['brandName'].toLowerCase();
 
@@ -154,8 +176,8 @@ class _ItemPageState extends State<ItemPage> {
                                 "Brand: ",//productData['brandName'],
                                 style: TextStyle(
                                   fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.indigo
+                                  //fontWeight: FontWeight.bold,
+                                  color: Colors.deepPurple,
                                 ),
                               ),
                            SizedBox(width: 6),
@@ -274,7 +296,7 @@ class _ItemPageState extends State<ItemPage> {
                           padding: EdgeInsets.all(7),
                           decoration: BoxDecoration(
 
-                            color: Colors.indigo,
+                            color: Colors.deepPurple,
                             borderRadius: BorderRadius.circular(7),
                           ),
                           child: Text(
@@ -282,7 +304,7 @@ class _ItemPageState extends State<ItemPage> {
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              //fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -432,10 +454,10 @@ class _ItemPageState extends State<ItemPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.deepPurple,
         onPressed: () => {
           if (selectedSize == null)
             {
-              // Show a notification indicating that the size is not selected
               _notificationService.showNotification(
                 id: 2,
                 title: 'Size Not Selected',
@@ -444,13 +466,13 @@ class _ItemPageState extends State<ItemPage> {
             }
           else
             {
-
+              addToCart(),
             }
         },
         child: Container(
           child: Icon(
             Icons.shopping_cart_sharp,
-            color: Colors.deepPurple,
+            color: Colors.white,
           ),
         ),
       ),

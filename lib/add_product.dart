@@ -84,6 +84,7 @@ class _AddProductState extends State<AddProduct> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.deepPurple,
         title: isUploading
             ? Text("Product Uploading ...",
