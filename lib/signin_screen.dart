@@ -95,13 +95,13 @@ class _SignInScreenState extends State<SignInScreen> {
                         _passwordTextController.text);
 
                     // Create notification after signing in
-                    await service.showNotificationWithPayload(
-                      id: 0,
-                      title: 'Welcome $userName',
-                      body: 'Lets buy your dream sneakers.',
-                      payload:
-                          'Hey $userName, Explore the latest and hottest sneaker releases from top brands. ',
-                    );
+                    // await service.showNotificationWithPayload(
+                    //   id: 0,
+                    //   title: 'Welcome $userName',
+                    //   body: 'Lets buy your dream sneakers.',
+                    //   payload:
+                    //       'Hey $userName, Explore the latest and hottest sneaker releases from top brands. ',
+                    // );
                   },
                 ),
                 signUpOption(),
@@ -123,9 +123,19 @@ class _SignInScreenState extends State<SignInScreen> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _emailTextController, password: _passwordTextController);
       final currentUser = FirebaseAuth.instance.currentUser!;
+      String userName = await getUserNameFromFirestore(_emailTextController);
       Fluttertoast.showToast(
           msg: "Successfully logged in as ${currentUser.email}",
           gravity: ToastGravity.TOP);
+      // Create notification after successful login
+      await service.showNotificationWithPayload(
+        id: 0,
+        title: 'Welcome $userName',
+        body: 'Lets buy your dream sneakers.',
+        payload:
+        'Hey $userName, Explore the latest and hottest sneaker releases from top brands. ',
+      );
+
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => HomeWithBottomNavigation()));
     } on FirebaseAuthException catch (error) {
