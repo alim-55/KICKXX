@@ -38,12 +38,16 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: Colors.deepPurple,
         title: Text(widget.receiverUserEmail),
         titleTextStyle: TextStyle(
-            fontSize: 15,
-            //fontWeight: FontWeight.bold,
-            color: Colors.white),
+          fontSize: 15,
+          color: Colors.white,
+        ),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.account_circle_rounded),color: Colors.white,),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.account_circle_rounded),
+            color: Colors.white,
+          ),
         ],
       ),
       body: Column(
@@ -60,8 +64,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildMessageList() {
     String currentUserEmail = _firebaseAuth.currentUser?.email ?? '';
     return StreamBuilder(
-      stream:
-          _chatService.getMessage(currentUserEmail, widget.receiverUserEmail),
+      stream: _chatService.getMessage(currentUserEmail, widget.receiverUserEmail),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error ${snapshot.error}');
@@ -72,9 +75,7 @@ class _ChatPageState extends State<ChatPage> {
 
         return ListView(
           reverse: true,
-          children: snapshot.data!.docs
-              .map((document) => _buildMessageItem(document))
-              .toList(),
+          children: snapshot.data!.docs.map((document) => _buildMessageItem(document)).toList(),
         );
       },
     );
@@ -85,13 +86,17 @@ class _ChatPageState extends State<ChatPage> {
     var alignment = (data['senderId'] == _firebaseAuth.currentUser?.uid)
         ? CrossAxisAlignment.end
         : CrossAxisAlignment.start;
+
+    String senderId = data['senderId'];
+    String senderName = data['senderName'] ?? ''; // Assuming senderName is stored in the document
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: alignment,
         children: [
           Text(
-            data['senderEmail'],
+            senderName,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Container(
@@ -125,7 +130,7 @@ class _ChatPageState extends State<ChatPage> {
 
   String _formatTimestamp(Timestamp timestamp) {
     DateTime dateTime = timestamp.toDate();
-    return '${dateTime.hour}:${dateTime.minute}';
+    return '${dateTime.day}:${dateTime.year}-${dateTime.hour}:${dateTime.minute}';
   }
 
   Widget _buildMessageInput() {
@@ -137,7 +142,8 @@ class _ChatPageState extends State<ChatPage> {
             child: TextField(
               controller: _messageController,
               decoration: InputDecoration(
-                hintText: 'Type a message...',suffixStyle: TextStyle(color: Colors.deepPurple,fontWeight: FontWeight.bold),
+                hintText: 'Type a message...',
+                suffixStyle: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(22.0),
                 ),
@@ -167,5 +173,4 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-
 }

@@ -5,21 +5,43 @@ import 'package:kickxx/ChatPage.dart';
 
 class Inbox extends StatelessWidget {
   const Inbox({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: Text("Inbox",style: TextStyle(color: Colors.white),),
+        title: Text(
+          "Inbox",
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
-      body: inboxCollection(),
+      body:
+
+      Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.black,
+                Colors.deepPurple,
+                Colors.black,
+                Colors.deepPurple,
+                Colors.black,
+                Colors.deepPurple,
+                Colors.black
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: InboxCollection()),
     );
   }
 }
 
-class inboxCollection extends StatelessWidget {
-  const inboxCollection({super.key});
+class InboxCollection extends StatelessWidget {
+  const InboxCollection({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,20 +57,25 @@ class inboxCollection extends StatelessWidget {
             child: Text('Error: ${snapshot.error}'),
           );
         } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(),
           );
         }
-        List<String> items = snapshot.data!.docs.map((doc) => doc.id).toList();
+        List<String> items =
+        snapshot.data!.docs.map((doc) => doc.id).toList();
         if (items.isEmpty) {
-          return const Center(
+          return Center(
             child: Text('No items found in the collection.'),
           );
         } else {
-          return ListView(
-            children: [
-              for (String receiver in items) InboxCard(receiverEmail: receiver),
-            ],
+          return ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: InboxCard(receiverEmail: items[index]),
+              );
+            },
           );
         }
       },
@@ -57,56 +84,86 @@ class inboxCollection extends StatelessWidget {
 }
 
 class InboxCard extends StatelessWidget {
-  String receiverEmail;
-  InboxCard({super.key, required this.receiverEmail});
+  final String receiverEmail;
+
+  InboxCard({Key? key, required this.receiverEmail});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection("users")
-              .doc(receiverEmail)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data!.data() != null) {
-              final userData = snapshot.data!.data() as Map<String, dynamic>;
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatPage(
-                        receiverUserEmail: receiverEmail,
-                      ),
-                    ),
-                  );
-                },
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      child: CircleAvatar(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.15),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 4,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatPage(
+                  receiverUserEmail: receiverEmail,
+                ),
+              ),
+            );
+          },
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(receiverEmail)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data!.data() != null) {
+                  final userData =
+                  snapshot.data!.data() as Map<String, dynamic>;
+                  return Row(
+                    children: [
+                      CircleAvatar(
                         radius: 30,
                         backgroundColor: Colors.white,
-                        backgroundImage: _selectedImage(userData['profilePicture']),
+                        backgroundImage:
+                        _selectedImage(userData['profilePicture']),
                       ),
-                    ),
-                    SizedBox(width: 10,),
-                    Text(userData['User name']),
-                  ],
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text("Error${snapshot.error}"),
-              );
-            } else
-              return const Center(child: CircularProgressIndicator());
-          }),
+                      SizedBox(width: 10),
+                      Text(
+                        userData['User name'],
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Error${snapshot.error}"),
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
+
+
 ImageProvider<Object>? _selectedImage(String? imagePath) {
   if (imagePath != null && imagePath.isNotEmpty) {
     return NetworkImage(imagePath);
