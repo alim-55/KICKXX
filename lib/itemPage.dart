@@ -84,7 +84,13 @@ class _ItemPageState extends State<ItemPage> {
                     });
                   },
                   itemBuilder: (BuildContext context, int index) {
-                    return Container(
+                    return GestureDetector(
+                        onTap: () {
+                      setState(() {
+                        selectedImageIndex = index;
+                      });
+                    },
+                    child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 4),
                       decoration: BoxDecoration(
                         color: selectedImageIndex == index
@@ -110,6 +116,10 @@ class _ItemPageState extends State<ItemPage> {
                         imageUrls[index],
                         width: 70,
                       ),
+
+
+                    ),
+
                     );
                   },
                 ),

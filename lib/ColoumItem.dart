@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kickxx/itemPage.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ColoumWidget extends StatefulWidget {
   @override
@@ -8,20 +9,89 @@ class ColoumWidget extends StatefulWidget {
 }
 
 class _ColoumWidgetState extends State<ColoumWidget> {
+
+  String? _selectedSortingOption;
+  String? _selectedColor;
+  List<String> _colorOptions = ['red', 'green', 'blue', 'brown', 'white','black','orange','others'];
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('products').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        }
-
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(
-            child: Text('No products found.'),
+    return Column(
+      children: [
+      // UI element for selecting sorting criteria
+      Theme(
+        data: Theme.of(context).copyWith(
+        canvasColor: Colors.deepPurple[300],),
+        child: DropdownButton<String>(
+          hint:Text( "sort"),
+        borderRadius: BorderRadius.circular(30.0),
+        icon: Icon(Icons.menu),
+        focusColor: Colors.white70,
+        value: _selectedSortingOption,
+        onChanged: (String? newValue) {
+          setState(() {
+            _selectedSortingOption = newValue;
+          });
+        },
+        items: <String>['Price High to Low','Price Low to High',
+           'Color'
+        ] // Add other sorting options here
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+        
+            value: value,
+            child: Container(
+              color: Colors.transparent,
+              child: Text(value,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           );
-        }
+        }).toList(),
+            ),
+      ),
+        if (_selectedSortingOption == 'Color') ...[
+          SizedBox(height: 10),
+          Theme(
+            data: Theme.of(context).copyWith(
+              canvasColor: Colors.deepPurple[300],),
+            child: DropdownButton<String>(
+              borderRadius: BorderRadius.circular(30.0),
+              menuMaxHeight: 250,
+              value: _selectedColor,
+              hint: Text('color'),
+
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedColor = newValue;
+                });
+              },
+              items: <String>['red', 'green', 'blue', 'brown', 'white','black','orange','others']// Add other color options here
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+    StreamBuilder<QuerySnapshot>(
+    stream: _getStream(), // Get the Firestore stream based on the sorting option
+    builder: (context, snapshot) {
+    if (snapshot.hasError) {
+    return Text('Error: ${snapshot.error}');
+    }
+
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+    return Center(
+    child: LoadingAnimationWidget.fallingDot(
+    color: Colors.white,
+    size: 50,
+    ),
+    );
+    }
 
         return GridView.count(
           childAspectRatio: .68,
@@ -37,8 +107,37 @@ class _ColoumWidgetState extends State<ColoumWidget> {
           ],
         );
       },
-    );
+    ),
+    ],);
   }
+
+  Stream<QuerySnapshot> _getStream() {
+    // Construct and return the Firestore stream based on the selected sorting option
+    if (_selectedSortingOption != null) {
+      if (_selectedSortingOption == 'Price High to Low') {
+        return FirebaseFirestore.instance
+            .collection('products')
+            .orderBy('productPrice', descending: true)
+            .snapshots();
+      } else if (_selectedSortingOption == 'Price Low to High') {
+        return FirebaseFirestore.instance
+            .collection('products')
+            .orderBy('productPrice', descending: false) // Descending order
+            .snapshots();
+      }
+      else if (_selectedSortingOption == 'Color' && _selectedColor != null) {
+        return FirebaseFirestore.instance
+            .collection('products')
+            .where('color', isEqualTo: _selectedColor)
+            .snapshots();
+      } else {
+        // Default sorting option or handling other cases
+        return FirebaseFirestore.instance.collection('products').snapshots();
+      }
+    }
+    return FirebaseFirestore.instance.collection('products').snapshots();
+  }
+
 
   Widget _buildProductCard(DocumentSnapshot product) {
     Map<String, dynamic>? productData = product.data() as Map<String, dynamic>?;
@@ -131,7 +230,9 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () => {},
+                    onPressed: () => {
+
+                    },
                     icon: Icon(
                       Icons.favorite_border_sharp,
                       color: Colors.deepPurple,
