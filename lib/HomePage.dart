@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
             end: Alignment.bottomRight,
           ),
         ),
-        padding: EdgeInsets.all(10),
+        //padding: EdgeInsets.all(10),
         child: ListView(
           children: [
             if (!isInitialDataLoaded)
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                 highlightColor: Colors.grey[100]!,
                 child: RowItemsWidget(),
               ),
-
+            SizedBox(height: 10,),
             if (isInitialDataLoaded) RowItemsWidget(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
             else
               ChangeNotifierProvider.value(
                 value: Provider.of<cartProvider>(context),
-                child: ColoumWidget(),
+                child: Padding(padding: EdgeInsets.all(5.0),child: ColoumWidget()),
               ),
           ],
         ),
