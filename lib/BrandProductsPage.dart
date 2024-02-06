@@ -27,7 +27,16 @@ class _BrandProductsPageState extends State<BrandProductsPage> {
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
-      body: StreamBuilder<QuerySnapshot>(
+      body:
+    Container(
+    decoration: BoxDecoration(
+    gradient: LinearGradient(
+    colors: [Colors.deepPurple, Colors.black, Colors.deepPurple, Colors.black, Colors.deepPurple],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    ),
+    ),
+      child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('products')
             .where('brandName', isEqualTo: widget.brandName)
@@ -43,21 +52,27 @@ class _BrandProductsPageState extends State<BrandProductsPage> {
             );
           }
 
-          return GridView.count(
-            childAspectRatio: .68,
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            crossAxisSpacing: 15.0,
-            mainAxisSpacing: 15.0,
-            padding: EdgeInsets.all(6.0),
-            physics: NeverScrollableScrollPhysics(),
+          return ListView(
             children: [
-              for (int i = 0; i < snapshot.data!.docs.length; i++)
-                _buildProductCard(snapshot.data!.docs[i]),
+              GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 15.0,
+                  mainAxisSpacing: 15.0,
+                  childAspectRatio: .68,
+                ),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  return _buildProductCard(snapshot.data!.docs[index]);
+                },
+              ),
             ],
           );
         },
       ),
+    ),
     );
   }
 
@@ -84,7 +99,7 @@ class _BrandProductsPageState extends State<BrandProductsPage> {
           context,
           PageRouteBuilder(
             // animation duration here
-            transitionDuration: Duration(milliseconds: 1000),
+            transitionDuration: Duration(milliseconds: 500),
             pageBuilder: (context, animation, secondaryAnimation) {
               return FadeTransition(
                 opacity: Tween<double>(begin: 0.0, end: 1.0).animate(

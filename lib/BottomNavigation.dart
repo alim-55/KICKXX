@@ -53,4 +53,3 @@ class _NavigateState extends State<BottomNavigation> {
     );
   }
 }
-

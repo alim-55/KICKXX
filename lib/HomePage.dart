@@ -11,7 +11,9 @@ import 'package:kickxx/BottomNavigation.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:badges/src/badge_animation.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'BrandProductsPage.dart';
+import 'CartPage.dart';
 import 'DatabaseHelper.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -25,18 +27,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool isRowItemsDataLoaded = false;
-  bool isColoumDataLoaded = false;
+  static bool isInitialDataLoaded = false;
+  // bool isRowItemsDataLoaded = false;
+  // bool isColoumDataLoaded = false;
   TextEditingController _searchController = TextEditingController();
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 3), () {
-      setState(() {
-        isRowItemsDataLoaded = true;
-        isColoumDataLoaded = true;
-      });
-    });
     super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.getBool('isInitialDataLoaded') == true) {
+      setState(() {
+        isInitialDataLoaded = true;
+      });
+    } else {
+      await Future.delayed(Duration(seconds: 3));
+
+      prefs.setBool('isInitialDataLoaded', true);
+
+      setState(() {
+        isInitialDataLoaded = true;
+      });
+    }
   }
 
   @override
@@ -74,18 +90,25 @@ class _HomePageState extends State<HomePage> {
             alignment: Alignment.topRight,
             children: [
               IconButton(
-                onPressed: () => {},
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Cart(),
+                    ),
+                  )
+                },
                 icon: Icon(Icons.shopping_bag),
                 color: Colors.white,
               ),
               Consumer<cartProvider>(
                   builder: (context, value, child) => badges.Badge(
-                    badgeContent: Text(
-                      value.getCounter().toString(),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    position: badges.BadgePosition.topEnd(top: 0, end: 0),
-                  ))
+                        badgeContent: Text(
+                          value.getCounter().toString(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        position: badges.BadgePosition.topEnd(top: 0, end: 0),
+                      ))
             ],
           ),
         ],
@@ -110,14 +133,14 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(10),
         child: ListView(
           children: [
-            if (!isRowItemsDataLoaded)
+            if (!isInitialDataLoaded)
               Shimmer.fromColors(
                 baseColor: Colors.grey[300]!,
                 highlightColor: Colors.grey[100]!,
                 child: RowItemsWidget(),
               ),
-            // Show RowItemsWidget when data is loaded
-            if (isRowItemsDataLoaded) RowItemsWidget(),
+
+            if (isInitialDataLoaded) RowItemsWidget(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Row(
@@ -152,7 +175,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        if(_searchController.text=="nike"||_searchController.text=="adidas"||_searchController.text=="newbalance"){
+                        if (_searchController.text == "nike" ||
+                            _searchController.text == "adidas" ||
+                            _searchController.text == "newbalance") {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -161,14 +186,13 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           );
-                        }else {
+                        } else {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  SearchResultPage(
-                                      productName: _searchController.text
-                                          .toLowerCase()),
+                              builder: (context) => SearchResultPage(
+                                  productName:
+                                      _searchController.text.toLowerCase()),
                             ),
                           );
                         }
@@ -182,13 +206,12 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 10),
             // Add shimmer effect to ColoumWidget
-            if (!isColoumDataLoaded)
+            if (!isInitialDataLoaded)
               Shimmer.fromColors(
                 baseColor: Colors.grey[300]!,
                 highlightColor: Colors.grey[100]!,
                 child: ColoumWidget(),
               )
-
             else
               ChangeNotifierProvider.value(
                 value: Provider.of<cartProvider>(context),
