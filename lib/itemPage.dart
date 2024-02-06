@@ -445,7 +445,7 @@ class _ItemPageState extends State<ItemPage> {
         onPressed: () => {
           if (selectedSize == null)
             {
-              // Show a notification indicating that the size is not selected
+              
               _notificationService.showNotification(
                 id: 2,
                 title: 'Size Not Selected',

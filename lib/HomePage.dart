@@ -12,6 +12,7 @@ import 'package:badges/badges.dart' as badges;
 import 'package:badges/src/badge_animation.dart';
 import 'package:provider/provider.dart';
 import 'BrandProductsPage.dart';
+import 'CartPage.dart';
 import 'DatabaseHelper.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -64,7 +65,7 @@ class _HomePageState extends State<HomePage> {
             );
           },
           icon: Icon(
-            Icons.messenger_outline_rounded,
+            Icons.mail,
             color: Colors.white,
             size: 30,
           ),
@@ -74,7 +75,15 @@ class _HomePageState extends State<HomePage> {
             alignment: Alignment.topRight,
             children: [
               IconButton(
-                onPressed: () => {},
+                onPressed: () => {
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) => Cart(),
+                ),
+                )
+
+                },
                 icon: Icon(Icons.shopping_bag),
                 color: Colors.white,
               ),
