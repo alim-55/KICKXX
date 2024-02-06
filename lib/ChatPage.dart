@@ -1,10 +1,11 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:kickxx/chatBubbles.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:kickxx/chatService.dart';
-import 'package:flutter/src/widgets/icon_data.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:kickxx/seller_profile.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverUserEmail;
@@ -36,17 +37,28 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
-        title: Text(widget.receiverUserEmail),
-        titleTextStyle: TextStyle(
-          fontSize: 15,
-          color: Colors.white,
+        title: Text(
+          widget.receiverUserEmail,
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white
+          ),
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.account_circle_rounded),
-            color: Colors.white,
+            onPressed: () {
+              /*Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Seller_Profile(
+                    //sellerData: widget.receiverUserEmail,
+                  ),
+                ),
+              );
+            */},
+            icon: Icon(Icons.account_circle_rounded,color: Colors.white,),
           ),
         ],
       ),
@@ -64,18 +76,30 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildMessageList() {
     String currentUserEmail = _firebaseAuth.currentUser?.email ?? '';
     return StreamBuilder(
-      stream: _chatService.getMessage(currentUserEmail, widget.receiverUserEmail),
+      stream:
+      _chatService.getMessage(currentUserEmail, widget.receiverUserEmail),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Text('Error ${snapshot.error}');
+          return Center(
+            child: Text(
+              'Error ${snapshot.error}',
+              style: TextStyle(color: Colors.deepPurple),
+            ),
+          );
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('Loading......');
+          return Center(
+            child: CircularProgressIndicator(
+              color: Colors.deepPurple,
+            ),
+          );
         }
 
         return ListView(
           reverse: true,
-          children: snapshot.data!.docs.map((document) => _buildMessageItem(document)).toList(),
+          children: snapshot.data!.docs
+              .map((document) => _buildMessageItem(document))
+              .toList(),
         );
       },
     );
@@ -83,59 +107,54 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    var alignment = (data['senderId'] == _firebaseAuth.currentUser?.uid)
-        ? CrossAxisAlignment.end
-        : CrossAxisAlignment.start;
+    bool isCurrentUser = data['senderId'] == _firebaseAuth.currentUser?.uid;
 
-    String senderId = data['senderId'];
-    String senderName = data['senderName'] ?? ''; // Assuming senderName is stored in the document
-
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: alignment,
-        children: [
-          Text(
-            senderName,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 4),
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: (data['senderId'] == _firebaseAuth.currentUser?.uid)
-                  ? Colors.deepPurple
-                  : Colors.deepPurple,
+    return Align(
+      alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: isCurrentUser ? Colors.deepPurple : Colors.grey.shade300,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              data['message'],
+              style: TextStyle(
+                fontSize: 17,
+                color: isCurrentUser ? Colors.white : Colors.deepPurple,
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  data['message'],
-                  style: TextStyle(fontSize: 15, color: Colors.white),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  _formatTimestamp(data['timestamp']),
-                  style: TextStyle(fontSize: 12, color: Colors.white),
-                ),
-              ],
+            SizedBox(height: 4),
+            Text(
+              _formatTimestamp(data['timestamp']),
+              style: TextStyle(
+                fontSize: 12,
+                color: isCurrentUser ? Colors.white : Colors.deepPurple,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
+
+
+
+
   String _formatTimestamp(Timestamp timestamp) {
     DateTime dateTime = timestamp.toDate();
-    return '${dateTime.day}:${dateTime.year}-${dateTime.hour}:${dateTime.minute}';
+    return '${dateTime.hour}:${dateTime.minute}';
   }
 
   Widget _buildMessageInput() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      color: Colors.white,
       child: Row(
         children: [
           Expanded(
@@ -143,7 +162,6 @@ class _ChatPageState extends State<ChatPage> {
               controller: _messageController,
               decoration: InputDecoration(
                 hintText: 'Type a message...',
-                suffixStyle: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(22.0),
                 ),
@@ -151,24 +169,19 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
           ),
+          SizedBox(width: 8),
           IconButton(
             onPressed: () {
               sendMessage();
-              FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(FirebaseAuth.instance.currentUser?.email)
-                  .collection("inbox")
-                  .doc(widget.receiverUserEmail)
-                  .set({});
-              FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(widget.receiverUserEmail)
-                  .collection("inbox")
-                  .doc(FirebaseAuth.instance.currentUser?.email)
-                  .set({});
             },
-            icon: Icon(Icons.send, size: 40, color: Colors.deepPurple),
-          )
+            icon: Icon(Icons.send, size: 30, color: Colors.deepPurple),
+          ),
+          IconButton(
+            onPressed: () {
+              //getImage(widget.receiverUserEmail);
+            },
+            icon: Icon(Icons.image, size: 30, color: Colors.deepPurple),
+          ),
         ],
       ),
     );
