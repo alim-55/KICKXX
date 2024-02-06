@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kickxx/seller_profile.dart';
 import 'package:kickxx/Notification_Service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:quickalert/quickalert.dart';
 import 'BrandProductsPage.dart';
 
 class ItemPage extends StatefulWidget {
@@ -375,6 +376,16 @@ class _ItemPageState extends State<ItemPage> {
             );
           } else {
             addToCart();
+            QuickAlert.show(
+              context: context,
+              //headerBackgroundColor: Colors.deepPurple,
+              //barrierColor: Colors.deepPurple,
+              confirmBtnColor: Colors.deepPurple,
+              type: QuickAlertType.success,
+              title: 'Success',
+              text: 'Added to Cart',
+              //duration: Duration(seconds: 2),
+            );
           }
         },
         child: Icon(

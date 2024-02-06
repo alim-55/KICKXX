@@ -101,15 +101,15 @@ class _AddedItemsPageState extends State<AddedItemsPage> {
                     margin: EdgeInsets.all(8.0),
                     child: ListTile(
                       leading: imageWidget,
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete,color: Colors.deepPurple,),
-                        onPressed: () {
-                          _showDeleteConfirmationDialog(
-                            context,
-                            snapshot.data!.docs[index].reference,
-                          );
-                        },
-                      ),
+                      // trailing: IconButton(
+                      //   //icon: Icon(Icons.delete,color: Colors.deepPurple,),
+                      //   onPressed: () {
+                      //     _showDeleteConfirmationDialog(
+                      //       context,
+                      //       snapshot.data!.docs[index].reference,
+                      //     );
+                      //   },
+                      // ),
                       title: Text(product['productName']),
                       subtitle: Text('Price: \$${product['productPrice']}'),
                       // Add more details as needed
