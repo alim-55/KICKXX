@@ -111,8 +111,15 @@ class _AddedItemsPageState extends State<AddedItemsPage> {
                         },
                       ),
                       title: Text(product['productName']),
-                      subtitle: Text('Price: \$${product['productPrice']}'),
-                      // Add more details as needed
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Price: \$${product['productPrice']}'),
+                         // Text('Added Time: ${_formatTimestamp(product['timestamp'])}'),
+                        ],
+                      ),
+
+
                     ),
                   ),
                 );
@@ -122,6 +129,11 @@ class _AddedItemsPageState extends State<AddedItemsPage> {
         ),
       ),
     );
+  }
+
+   String _formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
 
   Future<void> _showDeleteConfirmationDialog(

@@ -56,7 +56,7 @@ class _AddProductState extends State<AddProduct> {
 
    final MultiSelectController _controller = MultiSelectController();
    final MultiSelectController _shoeSizeController = MultiSelectController();
-
+  final MultiSelectController _colorController = MultiSelectController();
    bool isUploading = false;
    List<ValueItem> selectedShoeCategory = [];
 
@@ -129,6 +129,7 @@ class _AddProductState extends State<AddProduct> {
                 ),
                 reusableTextField("Enter Product name", null, false, _productnameTextController,f1,f2,context,(){}),
                 SizedBox(height: 10.0),
+
                 Container(
                     padding: EdgeInsets.only(left: 11),
                     child: const Text('Brand ',style: TextStyle(fontSize: 20,color: Colors.white70),
@@ -136,7 +137,40 @@ class _AddProductState extends State<AddProduct> {
                 const SizedBox(
                   height: 4,
                 ),
-                reusableTextField("Enter Brand name", null, false, _brandNameTextController,f2,f3,context,(){}),
+                Container(
+                  child: MultiSelectDropDown(
+                    controller: _controller,
+                    onOptionSelected: (List<ValueItem> selectedOptions) {},
+                    options: const <ValueItem>[
+                      ValueItem(label: 'Nike ', value: '1'),
+                      ValueItem(label: 'Adidas',value: '2'),
+                      ValueItem(label: 'NewBalance', value: '3'),
+                      ValueItem(label: 'Puma', value: '4'),
+                      ValueItem(label: 'Vans', value: '5'),
+                      // ValueItem(label: 'Nike Basketball', value: '6'),
+                      // ValueItem(label: 'Nike Running', value: '7'),
+                      // ValueItem(label: 'Nike Sandal & Slides', value: '8'),
+
+
+                    ],
+                    hint: "Select Brand",
+                    hintColor: Colors.black,
+                    hintFontSize: 14.0,
+                    borderColor: Colors.transparent,
+                    selectedOptionBackgroundColor:Colors.white70,
+                    optionsBackgroundColor:Colors.deepPurple[100],
+
+
+                    selectionType: SelectionType.single,
+                    chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+                    dropdownHeight: 250,
+                    borderRadius: 20.0,
+                    fieldBackgroundColor:Colors.white,
+                    optionTextStyle: const TextStyle(fontSize: 16),
+                    selectedOptionIcon: const Icon(Icons.check_circle),
+                  ),
+                ),
+                //reusableTextField("Enter Brand name", null, false, _brandNameTextController,f2,f3,context,(){}),
                 SizedBox(height: 10.0),
                 Container(
                     padding: EdgeInsets.only(left: 11),
@@ -145,7 +179,47 @@ class _AddProductState extends State<AddProduct> {
                 const SizedBox(
                   height: 4,
                 ),
-                reusableTextField("Enter Shoe Color", null, false, _colorTextController,f3,f4,context,(){}),
+
+                Container(
+                  child: MultiSelectDropDown(
+                    controller: _colorController,
+                    onOptionSelected: (List<ValueItem> selectedOptions) {},
+                    options: const <ValueItem>[
+                      ValueItem(label: 'red ', value: '1'),
+                      ValueItem(label: 'green',value: '2'),
+                      ValueItem(label: 'blue', value: '3'),
+                      ValueItem(label: 'black', value: '4'),
+                      ValueItem(label: 'brown', value: '5'),
+                      ValueItem(label: 'white', value: '6'),
+                      ValueItem(label: 'orange', value: '7'),
+                      ValueItem(label: 'others', value: '8'),
+                      // ValueItem(label: 'Nike Basketball', value: '6'),
+                      // ValueItem(label: 'Nike Running', value: '7'),
+                      // ValueItem(label: 'Nike Sandal & Slides', value: '8'),
+
+
+                    ],
+                    focusedBorderColor: Colors.black,
+                    hint: "Select Color",
+                    hintColor: Colors.black,
+                    hintFontSize: 14.0,
+                    borderColor: Colors.transparent,
+                    selectedOptionBackgroundColor:Colors.white70,
+                    optionsBackgroundColor:Colors.deepPurple[100],
+
+
+                    selectionType: SelectionType.single,
+                    chipConfig: const ChipConfig(wrapType: WrapType.wrap),
+                    dropdownHeight: 250,
+                    borderRadius: 20.0,
+                    fieldBackgroundColor:Colors.white,
+                    optionTextStyle: const TextStyle(fontSize: 16),
+                    selectedOptionIcon: const Icon(Icons.check_circle),
+                  ),
+                ),
+
+
+              //  reusableTextField("Enter Shoe Color", null, false, _colorTextController,f3,f4,context,(){}),
                 SizedBox(height: 10.0),
                 Container(
                     padding: EdgeInsets.only(left: 11),
@@ -154,7 +228,7 @@ class _AddProductState extends State<AddProduct> {
                 const SizedBox(
                   height: 4,
                 ),
-                reusableTextField("Enter Product Description", null, false, _productDescriptionTextController,f4,f5,context,(){}),
+                reusableTextField("Enter Product Description", null, false, _productDescriptionTextController,f3,f4,context,(){}),
                 SizedBox(height: 10.0),
                 Container(
                     padding: EdgeInsets.only(left: 11),
@@ -163,7 +237,7 @@ class _AddProductState extends State<AddProduct> {
                 const SizedBox(
                   height: 4,
                 ),
-                reusableTextField("Enter Product Price", null, false, _productPriceTextController,f5,f6,context,(){}),
+                reusableTextField("Enter Product Price", null, false, _productPriceTextController,f4,f5,context,(){}),
                 SizedBox(height: 10.0),
                 // reusableTextField("Enter Product's Quantity", null, false, _productquantityTextController,f6,f7,context,(){}),
                 // SizedBox(height: 10.0),
@@ -171,7 +245,7 @@ class _AddProductState extends State<AddProduct> {
 
                 Container(
                     padding: EdgeInsets.only(left: 11),
-                    child: const Text('Shoe Size',style: TextStyle(fontSize: 20),
+                    child: const Text('Shoe Size',style: TextStyle(fontSize: 20,color: Colors.white70),
                       textAlign: TextAlign.start,)),
                 const SizedBox(
                   height: 4,
@@ -207,148 +281,38 @@ class _AddProductState extends State<AddProduct> {
                   height: 30,
                 ),
                 Wrap(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _shoeSizeController.clearAllSelection();
-                      },
-                      child: const Text('CLEAR'),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                 /*   ElevatedButton(
-                      onPressed: () {
-                        debugPrint(_controller.selectedOptions.toString());
-                      },
-                      child: const Text('Get Selected Options'),
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),*/
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_shoeSizeController.isDropdownOpen) {
-                          _shoeSizeController.hideDropdown();
-                        } else {
-                          _shoeSizeController.showDropdown();
-                        }
-                      },
-                      child: const Text('SHOW/HIDE DROPDOWN'),
-                    ),
-                  ],
+                  // children: [
+                  //   ElevatedButton(
+                  //     onPressed: () {
+                  //       _shoeSizeController.clearAllSelection();
+                  //     },
+                  //     child: const Text('CLEAR'),
+                  //   ),
+                  //   const SizedBox(
+                  //     width: 8,
+                  //   ),
+                  //
+                  //   ElevatedButton(
+                  //     onPressed: () {
+                  //       if (_shoeSizeController.isDropdownOpen) {
+                  //         _shoeSizeController.hideDropdown();
+                  //       } else {
+                  //         _shoeSizeController.showDropdown();
+                  //       }
+                  //     },
+                  //     child: const Text('SHOW/HIDE DROPDOWN'),
+                  //   ),
+                  // ],
                 ),
 
-                SizedBox(height: 40),
+                //SizedBox(height: 40),
 
 
-            Center(
-
-              child: Container(
-
-                /*child: DropdownButtonFormField2<String>(
-                  isExpanded: true,
-                  decoration: InputDecoration(
-                    // Add Horizontal padding using menuItemStyleData.padding so it matches
-                    // the menu padding when button's width is not specified.
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    // Add more decoration..
-                  ),
-                  hint: const Text(
-                    'Select Your Gender',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  items: genderItems
-                      .map((item) => DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                  ))
-                      .toList(),
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select gender.';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    //Do something when selected item is changed.
-                  },
-                  onSaved: (value) {
-                    selectedValue = value.toString();
-                  },
-                  buttonStyleData: const ButtonStyleData(
-                    padding: EdgeInsets.only(right: 8),
-                  ),
-                  iconStyleData: const IconStyleData(
-                    icon: Icon(
-                      Icons.arrow_drop_down,
-                      color: Colors.black45,
-                    ),
-                    iconSize: 24,
-                  ),
-                  dropdownStyleData: DropdownStyleData(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  menuItemStyleData: const MenuItemStyleData(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                  ),
-                ),*/
-
-
-
-                /*child: MultiSelectDropDown(
-                  controller: _controller,
-                  onOptionSelected: (List<ValueItem> selectedOptions) {
-                    setState(() {
-                      selectedShoeCategory = selectedOptions;
-                    });
-                  },
-                  options: const <ValueItem>[
-                    ValueItem(label: 'Nike Lifestyle', value: '1'),
-                    ValueItem(label: 'Nike Jordan',value: '2'),
-                    ValueItem(label: 'Nike Air Max', value: '3'),
-                    ValueItem(label: 'Nike Air Force 1', value: '4'),
-                    ValueItem(label: 'Nike Dunks & Blazers', value: '5'),
-                    ValueItem(label: 'Nike Basketball', value: '6'),
-                    ValueItem(label: 'Nike Running', value: '7'),
-                    ValueItem(label: 'Nike Sandal & Slides', value: '8'),
-
-
-                  ],
-                  hint: "Select Shoe catagory",
-                  hintColor: Colors.white,
-                  hintFontSize: 18.0,
-                  borderColor: Colors.transparent,
-                  selectedOptionBackgroundColor:Colors.white70,
-                  optionsBackgroundColor:Colors.deepPurple[100],
-searchBackgroundColor: Colors.redAccent,
-                  //selectedOptionTextColor: Colors.white,
-
-                  selectionType: SelectionType.single,
-                  chipConfig: const ChipConfig(wrapType: WrapType.wrap),
-                  dropdownHeight: 300,
-                  borderRadius: 20.0,
-                  fieldBackgroundColor:Colors.white.withOpacity(0.3),
-                  optionTextStyle: const TextStyle(fontSize: 16),
-                  selectedOptionIcon: const Icon(Icons.check_circle),
-                ),*/
-              ),
-            ),
                 SizedBox(height: 30),
                 Container(
                   padding: EdgeInsets.only(left: 11),
                   child: Text("Add Product Images",
-                  style: TextStyle(color: Colors.black,
+                  style: TextStyle(color: Colors.white70,
                   fontSize: 20,
                  // fontWeight: FontWeight.bold
                   ),
@@ -417,7 +381,8 @@ searchBackgroundColor: Colors.redAccent,
    Future<void> uploadProduct() async {
 
      try {
-       if(_productPriceTextController.text.isEmpty|| _productDescriptionTextController.text.isEmpty||_brandNameTextController.text.isEmpty||_colorTextController.text.isEmpty){
+       if(_productPriceTextController.text.isEmpty||_controller.selectedOptions.isEmpty ||
+           _colorController.selectedOptions.isEmpty || _productDescriptionTextController.text.isEmpty){
          Fluttertoast.showToast(msg: 'Please fill in all fields', gravity: ToastGravity.TOP);
          return;
        }
@@ -457,15 +422,13 @@ searchBackgroundColor: Colors.redAccent,
 
        final productInfo = {
          'productName': _productnameTextController.text.toLowerCase(),
-         'brandName': _brandNameTextController.text.toLowerCase(),
-         'color': _colorTextController.text.toLowerCase(),
+         'brandName':  _controller.selectedOptions[0].label.toLowerCase(),
+         'color': _colorController.selectedOptions[0].label.toLowerCase(),//_colorTextController.text.toLowerCase(),
          'productDescription': _productDescriptionTextController.text,
          'productPrice': double.parse(_productPriceTextController.text),
-        // 'productQuantity': int.parse(_productquantityTextController.text),
          'shoeSizes': _shoeSizeController.selectedOptions.map((item) =>
          item.label).toList(),
-         'category': selectedValue ,
-         // Ensure to handle null case appropriately
+         'timestamp': FieldValue.serverTimestamp(),
          'imageUrls': imageUrls,
          'sellerId': sellerID,
        };
@@ -477,11 +440,7 @@ searchBackgroundColor: Colors.redAccent,
          isUploading = false;
        });
 
-       // Show success message
-       // Fluttertoast.showToast(
-       //   msg: 'Product uploaded successfully',
-       //   gravity: ToastGravity.TOP,
-       // );
+
 
        print('Image URLs: $imageUrls');
        print('Product uploaded successfully.');
