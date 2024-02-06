@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/quickalert.dart';
 
 class Cart extends StatefulWidget {
   @override
@@ -67,13 +69,14 @@ class _CartState extends State<Cart> {
                 .doc(FirebaseAuth.instance.currentUser!.email)
                 .collection("items")
                 .snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
                 return Center(child: Text("Something went wrong"));
               }
 
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(child: Text("Your cart is empty"));
+                return Center(child: Text("Your cart is empty",style: TextStyle(color: Colors.white, fontSize: 20),));
               }
               double totalAmount = calculateTotalPrice(snapshot.data!.docs);
               return Column(
@@ -82,7 +85,8 @@ class _CartState extends State<Cart> {
                     child: ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (_, index) {
-                        DocumentSnapshot _documentSnapshot = snapshot.data!.docs[index];
+                        DocumentSnapshot _documentSnapshot =
+                        snapshot.data!.docs[index];
                         String imageUrl = _documentSnapshot['imageUrls'];
 
                         return Slidable(
@@ -96,10 +100,11 @@ class _CartState extends State<Cart> {
                                 backgroundColor: Colors.red,
                                 icon: Icons.delete,
                                 label: 'Delete',
-                                onPressed: (context) => _showDeleteConfirmationDialog(
-                                  context,
-                                  snapshot.data!.docs[index].reference,
-                                ),
+                                onPressed: (context) =>
+                                    _showDeleteConfirmationDialog(
+                                      context,
+                                      snapshot.data!.docs[index].reference,
+                                    ),
                               ),
                             ],
                           ),
@@ -113,7 +118,8 @@ class _CartState extends State<Cart> {
                               width: double.infinity,
                               //height: 110.0,
                               child: ListTile(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16.0, vertical: 8.0),
                                 leading: Container(
                                   //margin: EdgeInsets.all(10),
                                   //height: 150,
@@ -147,7 +153,9 @@ class _CartState extends State<Cart> {
                                 ),
                                 subtitle: Text(
                                   "\$ ${_documentSnapshot['productPrice']}",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
                                 ),
                               ),
                             ),
@@ -156,40 +164,53 @@ class _CartState extends State<Cart> {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Center(
-                          child: Text(
-                            'Total: \$${totalAmount.toStringAsFixed(2)}',
-                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
+                  Container(
+                    height: 125,
+                    decoration: BoxDecoration(
+                      //color: Colors.deepPurple, // Background color
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
                         ),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Implement checkout functionality
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.deepPurple, // Background color
-                            onPrimary: Colors.white, // Text color
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.deepPurple)),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Center(
+                            child: Text(
+                              'Total: \$${totalAmount.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
                             ),
                           ),
-                          child: Text(
-                            'Checkout',
-                            style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
-
+                          SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Implement checkout functionality
+                              _showPaymentBottomSheet(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.deepPurple, // Background color
+                              onPrimary: Colors.white, // Text color
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Text(
+                              'Checkout',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  )
-
+                  ),
                 ],
               );
             },
@@ -199,10 +220,8 @@ class _CartState extends State<Cart> {
     );
   }
 
-  Future<void> _showDeleteConfirmationDialog(
-      BuildContext context,
-      DocumentReference productReference,
-      ) async {
+  Future<void> _showDeleteConfirmationDialog(BuildContext context,
+      DocumentReference productReference,) async {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -228,5 +247,87 @@ class _CartState extends State<Cart> {
       },
     );
   }
-}
 
+  Future<void> _showPaymentBottomSheet(BuildContext context) async {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Choose a Payment Method',
+                style: TextStyle(fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple),
+              ),
+              SizedBox(height: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                // Adjust the circular border radius as needed
+                child: Material(
+                  elevation: 6,
+                  // Adjust the elevation to control the shadow intensity
+                  borderRadius: BorderRadius.circular(20),
+                  // Same circular border radius as ClipRRect
+                  child: ListTile(
+                    title: Text('Online Payment'),
+                    onTap: () {
+                      // Handle credit card payment
+                      Navigator.pop(context);
+                      _showSuccessAlert();
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(height: 16,),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                // Adjust the circular border radius as needed
+                child: Material(
+                  elevation: 4,
+                  // Adjust the elevation to control the shadow intensity
+                  borderRadius: BorderRadius.circular(20),
+                  // Same circular border radius as ClipRRect
+                  child: ListTile(
+                    title: Text('Cash on Delivery'),
+                    onTap: () {
+                      // Handle credit card payment
+                      Navigator.pop(context);
+                      _showSuccessAlert();
+                    },
+                  ),
+                ),
+              ),
+              // Add more payment methods as needed
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showSuccessAlert() {
+    QuickAlert.show(
+      context: context,
+      confirmBtnColor: Colors.deepPurple,
+      type: QuickAlertType.success,
+      title: 'Success',
+      text: 'Product ordered successfully!',
+      //duration: Duration(seconds: 2),
+    );
+    // Empty the cart
+    FirebaseFirestore.instance
+        .collection("Cart")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("items")
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot doc in snapshot.docs) {
+        doc.reference.delete();
+      }
+    });
+  }
+}
