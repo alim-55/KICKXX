@@ -126,115 +126,120 @@ class _BrandProductsPageState extends State<BrandProductsPage> {
         );
       },
       child: Hero(
-        tag: 'product_${product.id}', // Use a unique tag for each product
-        child: Container(
-          padding: EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.deepPurple.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 2,
-                offset: Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Colors.deepPurple,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      "HOT",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => {},
-                    icon: Icon(
-                      Icons.favorite_border_sharp,
-                      color: Colors.deepPurple,
-                    ),
-                  ),
-                ],
-              ),
+        tag: 'product_${product.id}',
+        // Use a unique tag for each product
 
-              Container(
-                margin: EdgeInsets.all(10),
-                height: 95,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Container(
+            //padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.deepPurple.withOpacity(0.1),
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                  offset: Offset(0, 3),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.network(
-                    imageUrls.isNotEmpty ? imageUrls.first : '',
-                    width: 150,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              ],
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      productData['productName'] ?? '',
-                      style: TextStyle(
-                        fontSize: 15,
+                    Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
                         color: Colors.deepPurple,
-                        fontWeight: FontWeight.bold,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        "HOT",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Price: \$${productData['productPrice'] ?? ''}',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.deepPurple,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: IconButton(
-                            onPressed: () => {},
-                            icon: Icon(
-                              Icons.shopping_cart_sharp,
-                              color: Colors.deepPurple,
-                            ),
-                          ),
-                        )
-                      ],
+                    IconButton(
+                      onPressed: () => {},
+                      icon: Icon(
+                        Icons.favorite_border_sharp,
+                        color: Colors.deepPurple,
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+          
+                Container(
+                  margin: EdgeInsets.all(10),
+                  height: 95,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.network(
+                      imageUrls.isNotEmpty ? imageUrls.first : '',
+                      width: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+          
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        productData['productName'] ?? '',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Price: \$${productData['productPrice'] ?? ''}',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: IconButton(
+                              onPressed: () => {},
+                              icon: Icon(
+                                Icons.shopping_cart_sharp,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
