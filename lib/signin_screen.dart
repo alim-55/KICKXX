@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kickxx/Notification_Service.dart';
 import 'package:kickxx/reset_password.dart';
@@ -114,7 +115,39 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   _signin(String _emailTextController, String _passwordTextController) async {
+    const spinkit = SpinKitRotatingCircle(
+      color: Colors.white,
+      size: 50.0,
+    );
     try {
+      // showDialog(
+      //     context: context,
+      //     builder: (context){
+      //       return Center(
+      //         child: CircularProgressIndicator(),
+      //       );
+      //     },
+      // );
+      showDialog(
+        context: context,
+        barrierDismissible: true, // Prevent dialog from being dismissed by tapping outside
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SpinKitFadingCircle(
+                  //duration: Duration(seconds: 1),
+                  color: Colors.deepPurple, // Customize spinner color
+                  size: 50.0,
+                ),
+                SizedBox(height: 20),
+                Text("Signing in...",style: TextStyle(color: Colors.deepPurple,fontWeight: FontWeight.w600,),),
+              ],
+            ),
+          );
+        },
+      );
       if (_emailTextController.isEmpty || _passwordTextController.isEmpty) {
         Fluttertoast.showToast(
             msg: 'Please fill in all fields', gravity: ToastGravity.TOP);
@@ -135,6 +168,8 @@ class _SignInScreenState extends State<SignInScreen> {
         payload:
         'Hey $userName, Explore the latest and hottest sneaker releases from top brands. ',
       );
+
+      Navigator.of(context).pop(context);
 
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => HomeWithBottomNavigation()));
