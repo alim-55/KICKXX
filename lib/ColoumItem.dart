@@ -65,7 +65,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                   _selectedColor = newValue;
                 });
               },
-              items: <String>['red', 'green', 'blue', 'brown', 'white','black','orange','others']// Add other color options here
+              items: <String>['red', 'green', 'blue', 'brown', 'white','black','orange','others']
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -78,7 +78,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
           ),
         ],
     StreamBuilder<QuerySnapshot>(
-    stream: _getStream(), // Get the Firestore stream based on the sorting option
+    stream: _getStream(),
     builder: (context, snapshot) {
     if (snapshot.hasError) {
     return Text('Error: ${snapshot.error}');
@@ -212,9 +212,9 @@ class _ColoumWidgetState extends State<ColoumWidget> {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
+                  /*Container(
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       color: Colors.deepPurple,
@@ -228,7 +228,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
+                  ),*/
                   IconButton(
                     onPressed: () => {
 
@@ -245,12 +245,12 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                 margin: EdgeInsets.all(10),
                 height: 95,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 2,
-                      blurRadius: 5,
+                      blurRadius: 1,
                       offset: Offset(0, 3),
                     ),
                   ],
@@ -264,33 +264,51 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                   ),
                 ),
               ),
-
+              SizedBox(height: 10,),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      productData['productName'] ?? '',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.deepPurple,
+                    Center(
+                      child: Text('Sneaker Name:',style: TextStyle(
                         fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),),
+                    ),
+                    Center(
+                      child: Text(
+                        productData['productName'] ,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
+                    SizedBox(height: 10,),
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            'Price: \$${productData['productPrice'] ?? ''}',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.deepPurple,
-                              fontWeight: FontWeight.bold,
+                          child: Center(
+                            child: Text(
+                              'Price: \$${productData['productPrice'] ?? ''}',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                        Expanded(
+                        /*SizedBox(height: 5,),
+                        Expanded(child: Text('Seller: ${productData['sellerName'] ?? ''}',
+                            style: TextStyle(
+                              fontSize: 1,
+                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.bold,)),
+                        )*/
+                        /*Expanded(
                           child: IconButton(
                             onPressed: () => {},
                             icon: Icon(
@@ -298,7 +316,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                               color: Colors.deepPurple,
                             ),
                           ),
-                        )
+                        )*/
                       ],
                     ),
                   ],
