@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kickxx/itemPage.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -9,7 +10,43 @@ class ColoumWidget extends StatefulWidget {
 }
 
 class _ColoumWidgetState extends State<ColoumWidget> {
+  Map<String, bool> favoriteStates = {};
+  void fav(String productID) async {
+    final DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.email)
+        .collection('favourites')
+        .doc(productID)
+        .get();
+    setState(() {
+      favoriteStates[productID]= documentSnapshot.exists;
+    });
+  }
 
+  void setFav(String productID) async {
+    //print(productID);
+    if (favoriteStates[productID]== true) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.email)
+          .collection('favourites')
+          .doc(productID)
+          .delete();
+      setState(() {
+        favoriteStates[productID] = false;
+      });
+    } else {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser?.email)
+          .collection("favourites")
+          .doc(productID)
+          .set({});
+      setState(() {
+        favoriteStates[productID] = true;
+      });
+    }
+  }
   String? _selectedSortingOption;
   String? _selectedColor;
   List<String> _colorOptions = ['red', 'green', 'blue', 'brown', 'white','black','orange','others'];
@@ -17,38 +54,38 @@ class _ColoumWidgetState extends State<ColoumWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-      // UI element for selecting sorting criteria
-      Theme(
-        data: Theme.of(context).copyWith(
-        canvasColor: Colors.deepPurple[300],),
-        child: DropdownButton<String>(
-          hint:Text( "sort"),
-        borderRadius: BorderRadius.circular(30.0),
-        icon: Icon(Icons.menu),
-        focusColor: Colors.white70,
-        value: _selectedSortingOption,
-        onChanged: (String? newValue) {
-          setState(() {
-            _selectedSortingOption = newValue;
-          });
-        },
-        items: <String>['Price High to Low','Price Low to High',
-           'Color'
-        ] // Add other sorting options here
-            .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-        
-            value: value,
-            child: Container(
-              color: Colors.transparent,
-              child: Text(value,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          );
-        }).toList(),
-            ),
-      ),
+        // UI element for selecting sorting criteria
+        Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: Colors.deepPurple[300],),
+          child: DropdownButton<String>(
+            hint:Text( "sort"),
+            borderRadius: BorderRadius.circular(30.0),
+            icon: Icon(Icons.menu),
+            focusColor: Colors.white70,
+            value: _selectedSortingOption,
+            onChanged: (String? newValue) {
+              setState(() {
+                _selectedSortingOption = newValue;
+              });
+            },
+            items: <String>['Price High to Low','Price Low to High',
+              'Color'
+            ] // Add other sorting options here
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+
+                value: value,
+                child: Container(
+                  color: Colors.transparent,
+                  child: Text(value,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
         if (_selectedSortingOption == 'Color') ...[
           SizedBox(height: 10),
           Theme(
@@ -77,38 +114,38 @@ class _ColoumWidgetState extends State<ColoumWidget> {
             ),
           ),
         ],
-    StreamBuilder<QuerySnapshot>(
-    stream: _getStream(),
-    builder: (context, snapshot) {
-    if (snapshot.hasError) {
-    return Text('Error: ${snapshot.error}');
-    }
+        StreamBuilder<QuerySnapshot>(
+          stream: _getStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
 
-    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-    return Center(
-    child: LoadingAnimationWidget.fallingDot(
-    color: Colors.white,
-    size: 50,
-    ),
-    );
-    }
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return Center(
+                child: LoadingAnimationWidget.fallingDot(
+                  color: Colors.white,
+                  size: 50,
+                ),
+              );
+            }
 
-        return GridView.count(
-          childAspectRatio: .68,
-          shrinkWrap: true,
-          crossAxisCount: 2,
-          crossAxisSpacing: 15.0,
-          mainAxisSpacing: 15.0,
-          padding: EdgeInsets.all(6.0),
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            for (int i = 0; i < snapshot.data!.docs.length; i++)
-              _buildProductCard(snapshot.data!.docs[i]),
-          ],
-        );
-      },
-    ),
-    ],);
+            return GridView.count(
+              childAspectRatio: .68,
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              crossAxisSpacing: 15.0,
+              mainAxisSpacing: 15.0,
+              padding: EdgeInsets.all(6.0),
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                for (int i = 0; i < snapshot.data!.docs.length; i++)
+                  _buildProductCard(snapshot.data!.docs[i]),
+              ],
+            );
+          },
+        ),
+      ],);
   }
 
   Stream<QuerySnapshot> _getStream() {
@@ -154,6 +191,11 @@ class _ColoumWidgetState extends State<ColoumWidget> {
       imageUrls = List<String>.from(rawImageUrls.map((e) => e.toString()));
     } else if (rawImageUrls is String) {
       imageUrls.add(rawImageUrls.toString());
+    }
+    @override
+    void initState() {
+      super.initState();
+      fav('${product.id}');
     }
 
     return InkWell(
@@ -230,14 +272,19 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                     ),
                   ),*/
                   IconButton(
-                    onPressed: () => {
+                      onPressed: () => {
+                        setFav('${product.id}'),
 
-                    },
-                    icon: Icon(
-                      Icons.favorite_border_sharp,
-                      color: Colors.deepPurple,
-                    ),
-                  ),
+                      },
+                      icon: favoriteStates[product.id]==true
+                          ? Icon(
+                        Icons.favorite_sharp,
+                        color: Colors.deepPurple,
+                      )
+                          : Icon(
+                        Icons.favorite_border_sharp,
+                        color: Colors.deepPurple,
+                      )),
                 ],
               ),
 
