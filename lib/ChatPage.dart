@@ -47,19 +47,40 @@ class _ChatPageState extends State<ChatPage> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {
-              /*Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Seller_Profile(
-                    //sellerData: widget.receiverUserEmail,
-                  ),
+          StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.receiverUserEmail)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (!snapshot.hasData || snapshot.data == null) {
+                print('User not found');
+                return Text('User not found');
+              }
+              return IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Seller_Profile(
+                        sellerData: snapshot.data!,
+                      ),
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.account_circle_outlined,
+                  color: Colors.white,
                 ),
               );
-            */},
-            icon: Icon(Icons.account_circle_rounded,color: Colors.white,),
+            },
           ),
+
         ],
       ),
       body: Column(
@@ -142,10 +163,6 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-
-
-
-
   String _formatTimestamp(Timestamp timestamp) {
     DateTime dateTime = timestamp.toDate();
     return '${dateTime.hour}:${dateTime.minute}';
@@ -178,7 +195,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
           IconButton(
             onPressed: () {
-              //getImage(widget.receiverUserEmail);
+
             },
             icon: Icon(Icons.image, size: 30, color: Colors.deepPurple),
           ),

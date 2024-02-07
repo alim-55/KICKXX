@@ -9,91 +9,67 @@ class ColoumWidget extends StatefulWidget {
 }
 
 class _ColoumWidgetState extends State<ColoumWidget> {
+
   String? _selectedSortingOption;
   String? _selectedColor;
-  List<String> _colorOptions = [
-    'red',
-    'green',
-    'blue',
-    'brown',
-    'white',
-    'black',
-    'orange',
-    'others'
-  ];
+  List<String> _colorOptions = ['red', 'green', 'blue', 'brown', 'white','black','orange','others'];
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // UI element for selecting sorting criteria
-        Theme(
-          data: Theme.of(context).copyWith(
-            canvasColor: Colors.deepPurple[300],
-          ),
-          child: DropdownButton<String>(
-            hint: Text(
-              "sort",
-              style: TextStyle(color: Colors.white),
+      // UI element for selecting sorting criteria
+      Theme(
+        data: Theme.of(context).copyWith(
+        canvasColor: Colors.deepPurple[300],),
+        child: DropdownButton<String>(
+          hint:Text( "sort"),
+        borderRadius: BorderRadius.circular(30.0),
+        icon: Icon(Icons.menu),
+        focusColor: Colors.white70,
+        value: _selectedSortingOption,
+        onChanged: (String? newValue) {
+          setState(() {
+            _selectedSortingOption = newValue;
+          });
+        },
+        items: <String>['Price High to Low','Price Low to High',
+           'Color'
+        ] // Add other sorting options here
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+        
+            value: value,
+            child: Container(
+              color: Colors.transparent,
+              child: Text(value,
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-            borderRadius: BorderRadius.circular(30.0),
-            icon: Icon(Icons.menu),
-            focusColor: Colors.white70,
-            value: _selectedSortingOption,
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedSortingOption = newValue;
-              });
-            },
-            items: <String>[
-              'Price High to Low',
-              'Price Low to High',
-              'Color'
-            ] // Add other sorting options here
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Container(
-                  color: Colors.transparent,
-                  child: Text(
-                    value,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
+          );
+        }).toList(),
+            ),
+      ),
         if (_selectedSortingOption == 'Color') ...[
           SizedBox(height: 10),
           Theme(
             data: Theme.of(context).copyWith(
-              canvasColor: Colors.deepPurple[300],
-            ),
+              canvasColor: Colors.deepPurple[300],),
             child: DropdownButton<String>(
               borderRadius: BorderRadius.circular(30.0),
               menuMaxHeight: 250,
               value: _selectedColor,
               hint: Text('color'),
+
               onChanged: (String? newValue) {
                 setState(() {
                   _selectedColor = newValue;
                 });
               },
-              items: <String>[
-                'red',
-                'green',
-                'blue',
-                'brown',
-                'white',
-                'black',
-                'orange',
-                'others'
-              ] // Add other color options here
+              items: <String>['red', 'green', 'blue', 'brown', 'white','black','orange','others']
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(
-                    value,
+                  child: Text(value,
                     style: TextStyle(color: Colors.white),
                   ),
                 );
@@ -101,40 +77,38 @@ class _ColoumWidgetState extends State<ColoumWidget> {
             ),
           ),
         ],
-        StreamBuilder<QuerySnapshot>(
-          stream:
-              _getStream(), // Get the Firestore stream based on the sorting option
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
+    StreamBuilder<QuerySnapshot>(
+    stream: _getStream(),
+    builder: (context, snapshot) {
+    if (snapshot.hasError) {
+    return Text('Error: ${snapshot.error}');
+    }
 
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Center(
-                child: LoadingAnimationWidget.fallingDot(
-                  color: Colors.white,
-                  size: 50,
-                ),
-              );
-            }
-
-            return GridView.count(
-              childAspectRatio: .68,
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              crossAxisSpacing: 15.0,
-              mainAxisSpacing: 15.0,
-              padding: EdgeInsets.all(6.0),
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                for (int i = 0; i < snapshot.data!.docs.length; i++)
-                  _buildProductCard(snapshot.data!.docs[i]),
-              ],
-            );
-          },
-        ),
-      ],
+    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+    return Center(
+    child: LoadingAnimationWidget.fallingDot(
+    color: Colors.white,
+    size: 50,
+    ),
     );
+    }
+
+        return GridView.count(
+          childAspectRatio: .68,
+          shrinkWrap: true,
+          crossAxisCount: 2,
+          crossAxisSpacing: 15.0,
+          mainAxisSpacing: 15.0,
+          padding: EdgeInsets.all(6.0),
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            for (int i = 0; i < snapshot.data!.docs.length; i++)
+              _buildProductCard(snapshot.data!.docs[i]),
+          ],
+        );
+      },
+    ),
+    ],);
   }
 
   Stream<QuerySnapshot> _getStream() {
@@ -150,7 +124,8 @@ class _ColoumWidgetState extends State<ColoumWidget> {
             .collection('products')
             .orderBy('productPrice', descending: false) // Descending order
             .snapshots();
-      } else if (_selectedSortingOption == 'Color' && _selectedColor != null) {
+      }
+      else if (_selectedSortingOption == 'Color' && _selectedColor != null) {
         return FirebaseFirestore.instance
             .collection('products')
             .where('color', isEqualTo: _selectedColor)
@@ -162,6 +137,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
     }
     return FirebaseFirestore.instance.collection('products').snapshots();
   }
+
 
   Widget _buildProductCard(DocumentSnapshot product) {
     Map<String, dynamic>? productData = product.data() as Map<String, dynamic>?;
@@ -190,7 +166,9 @@ class _ColoumWidgetState extends State<ColoumWidget> {
 
             pageBuilder: (context, animation, secondaryAnimation) {
               return FadeTransition(
-                opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+
+                opacity: Tween<double>(begin: 0.0, end: 1.0)
+                    .animate(
                   CurvedAnimation(
                     parent: animation,
                     curve: Curves.fastOutSlowIn,
@@ -199,10 +177,11 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                 child: ItemPage(product: product),
               );
             },
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
               return FadeTransition(
-                opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+
+                opacity: Tween<double>(begin: 0.0, end: 1.0)
+                    .animate(
                   CurvedAnimation(
                     parent: animation,
                     curve: Curves.fastOutSlowIn,
@@ -233,9 +212,9 @@ class _ColoumWidgetState extends State<ColoumWidget> {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
+                  /*Container(
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       color: Colors.deepPurple,
@@ -249,9 +228,11 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
+                  ),*/
                   IconButton(
-                    onPressed: () => {},
+                    onPressed: () => {
+
+                    },
                     icon: Icon(
                       Icons.favorite_border_sharp,
                       color: Colors.deepPurple,
@@ -259,16 +240,17 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                   ),
                 ],
               ),
+
               Container(
                 margin: EdgeInsets.all(10),
                 height: 95,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(8.0),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 2,
-                      blurRadius: 5,
+                      blurRadius: 1,
                       offset: Offset(0, 3),
                     ),
                   ],
@@ -282,32 +264,51 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                   ),
                 ),
               ),
+              SizedBox(height: 10,),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      productData['productName'] ?? '',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.deepPurple,
+                    Center(
+                      child: Text('Sneaker Name:',style: TextStyle(
                         fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),),
+                    ),
+                    Center(
+                      child: Text(
+                        productData['productName'] ,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
+                    SizedBox(height: 10,),
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            'Price: \$${productData['productPrice'] ?? ''}',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.deepPurple,
-                              fontWeight: FontWeight.bold,
+                          child: Center(
+                            child: Text(
+                              'Price: \$${productData['productPrice'] ?? ''}',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                        Expanded(
+                        /*SizedBox(height: 5,),
+                        Expanded(child: Text('Seller: ${productData['sellerName'] ?? ''}',
+                            style: TextStyle(
+                              fontSize: 1,
+                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.bold,)),
+                        )*/
+                        /*Expanded(
                           child: IconButton(
                             onPressed: () => {},
                             icon: Icon(
@@ -315,7 +316,7 @@ class _ColoumWidgetState extends State<ColoumWidget> {
                               color: Colors.deepPurple,
                             ),
                           ),
-                        )
+                        )*/
                       ],
                     ),
                   ],
@@ -327,4 +328,5 @@ class _ColoumWidgetState extends State<ColoumWidget> {
       ),
     );
   }
+
 }
