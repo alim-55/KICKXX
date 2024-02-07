@@ -10,6 +10,8 @@ import 'package:kickxx/reusable_widget.dart';
 import 'package:kickxx/seller_profile.dart';
 import 'package:kickxx/signin_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/quickalert.dart';
 import 'signup_screen.dart';
 import 'signup_screen.dart';
 import 'text_box.dart';
@@ -19,8 +21,17 @@ class AccountPage extends StatefulWidget {
 
   @override
   State<AccountPage> createState() => _AccountPageState();
+  Future<void> showProductUploadedAlert(BuildContext context) async {
+    return QuickAlert.show(
+      context: context,
+      confirmBtnColor: Colors.deepPurple,
+      type: QuickAlertType.success,
+      title: 'Success',
+      text: 'Product ordered successfully!',
+      //duration: Duration(seconds: 2),
+    );
+  }
 }
-
 class _AccountPageState extends State<AccountPage> {
   final currentUser = FirebaseAuth.instance.currentUser!;
   final _imagePicker = ImagePicker();
@@ -109,6 +120,7 @@ class _AccountPageState extends State<AccountPage> {
           .update({'profilePicture': downloadURL});
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

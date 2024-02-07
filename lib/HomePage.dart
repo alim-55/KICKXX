@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
         isInitialDataLoaded = true;
       });
     } else {
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 2));
 
       prefs.setBool('isInitialDataLoaded', true);
 
@@ -101,14 +101,14 @@ class _HomePageState extends State<HomePage> {
                 icon: Icon(Icons.shopping_bag),
                 color: Colors.white,
               ),
-              Consumer<cartProvider>(
-                  builder: (context, value, child) => badges.Badge(
-                        badgeContent: Text(
-                          value.getCounter().toString(),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        position: badges.BadgePosition.topEnd(top: 0, end: 0),
-                      ))
+              // Consumer<cartProvider>(
+              //     builder: (context, value, child) => badges.Badge(
+              //           badgeContent: Text(
+              //             value.getCounter().toString(),
+              //             style: TextStyle(color: Colors.white),
+              //           ),
+              //           position: badges.BadgePosition.topEnd(top: 0, end: 0),
+              //         ))
             ],
           ),
         ],

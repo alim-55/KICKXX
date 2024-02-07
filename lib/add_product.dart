@@ -444,17 +444,18 @@ class _AddProductState extends State<AddProduct> {
 
        print('Image URLs: $imageUrls');
        print('Product uploaded successfully.');
-       _notificationService.showNotification(
-         id: 3,
-         title: 'Update',
-         body: 'Product added successfully.',
+       // _notificationService.showNotification(
+       //   id: 3,
+       //   title: 'Update',
+       //   body: 'Product added successfully.',
+       //
+       // );
+       // Show the success alert
+       await AccountPage().showProductUploadedAlert(context);
 
-       );Navigator.push(
-         context,
-         MaterialPageRoute(
-           builder: (context) => AccountPage(),
-         ),
-       );
+
+       // Navigate back to AccountPage
+       Navigator.pop(context);
 
 
      }catch (e) {
