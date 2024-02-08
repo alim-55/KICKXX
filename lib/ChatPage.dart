@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kickxx/chatService.dart';
@@ -29,6 +28,21 @@ class _ChatPageState extends State<ChatPage> {
       await _chatService.sendMessage(
           widget.receiverUserEmail, _messageController.text);
       _messageController.clear();
+    }
+  }
+
+  void getImage() async {
+    File? imageFile = await _chatService.getImage();
+    if (imageFile != null) {
+      // Upload the image to Firebase Storage and send the message
+      String? imageUrl = await _chatService.uploadImage(imageFile, widget.receiverUserEmail);
+      if (imageUrl != null) {
+        // Message sent successfully
+        print('Image uploaded successfully: $imageUrl');
+      } else {
+        // Error uploading image
+        print('Error uploading image');
+      }
     }
   }
 
@@ -130,7 +144,7 @@ class _ChatPageState extends State<ChatPage> {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     bool isCurrentUser = data['senderId'] == _firebaseAuth.currentUser?.uid;
 
-    return Align(
+    return data['type'] == "text" ? Align(
       alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -160,6 +174,9 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
       ),
+    ): Container(
+      alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Image.network(data['message']),
     );
   }
 
@@ -195,7 +212,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
           IconButton(
             onPressed: () {
-
+              getImage();
             },
             icon: Icon(Icons.image, size: 30, color: Colors.deepPurple),
           ),

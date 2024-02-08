@@ -21,6 +21,7 @@ class Message {
       'senderEmail': senderEmail,
       'receiverEmail': receiverEmail,
       'message': message,
+      "type": "text",
       'timestamp': timestamp,
     };
   }

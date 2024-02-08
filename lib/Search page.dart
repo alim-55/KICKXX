@@ -104,9 +104,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
             Expanded(
               child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
+                child:  Column(
                     children: [
                       // Add your scrollable content here
                       ColoumWidget(),
@@ -114,7 +112,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
               ),
-            ),
+
           ],
         ),
       ),
