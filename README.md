@@ -1,4 +1,4 @@
-KICKXX is a cutting-edge Flutter app designed to cater to the dynamic sneaker market in Bangladesh. Developed by [Your Name or Your Team Name], this app offers a seamless shopping experience for sneaker enthusiasts, providing access to a diverse range of premium footwear.
+KICKXX is a cutting-edge Flutter app designed to cater to the dynamic sneaker market in Bangladesh. This app offers a seamless shopping experience for sneaker enthusiasts, providing access to a diverse range of premium footwear.
 
 Key Features:
 
